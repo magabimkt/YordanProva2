@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saúde Coletiva e Redes SUS — Estudo</title>
+<style>
+:root{
+  --bg:#0e0a06;--bg2:#161008;--bg3:#1f1609;--bg4:#2a1f0d;--bg5:#362811;
+  --bd:rgba(255,160,60,.09);--bd2:rgba(255,160,60,.22);
+  --tx:#fff3e0;--tx2:#c49a6c;--tx3:#7a5a35;
+  --o1:#fb923c;--o1l:#fed7aa;   /* laranja principal */
+  --o2:#f97316;--o2l:#ffedd5;   /* laranja vivo */
+  --o3:#fbbf24;--o3l:#fef3c7;   /* âmbar/dourado */
+  --o4:#ef4444;--o4l:#fee2e2;   /* vermelho-coral */
+  --o5:#84cc16;--o5l:#ecfccb;   /* lima/verde */
+  --o6:#22d3ee;--o6l:#cffafe;   /* ciano */
+  --o7:#a78bfa;--o7l:#ede9fe;   /* violeta */
+  --r:14px;--rs:9px;--sh:0 10px 44px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.78;}
+.shell{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:280px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--bd);
+  position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+.main{margin-left:280px;flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;}
+.scr::-webkit-scrollbar{width:5px;}.scr::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px;}
+.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px;}
+.sb-logo{padding:19px 18px 12px;border-bottom:1px solid var(--bd);}
+.sb-logo h2{font-size:11px;font-weight:800;color:var(--o1);letter-spacing:.09em;text-transform:uppercase;}
+.sb-logo p{font-size:11px;color:var(--tx3);margin-top:3px;}
+.sb-pb{padding:11px 18px;border-bottom:1px solid var(--bd);}
+.sb-pb-l{font-size:11px;color:var(--tx3);display:flex;justify-content:space-between;}
+.sb-bar{height:3px;background:var(--bg5);border-radius:2px;margin-top:5px;overflow:hidden;}
+.sb-bar-f{height:3px;background:linear-gradient(90deg,var(--o2),var(--o3));border-radius:2px;transition:width .4s;width:0%;}
+.sb-sec{padding:9px 18px 3px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);}
+.sbn{list-style:none;padding:0 8px 8px;}
+.sbn li a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);font-size:12.5px;
+  color:var(--tx2);text-decoration:none;transition:all .15s;cursor:pointer;}
+.sbn li a:hover{background:var(--bg3);color:var(--tx);}
+.sbn li a.active{background:rgba(251,146,60,.15);color:var(--o1l);}
+.qdot{width:22px;height:22px;border-radius:50%;background:var(--bg4);font-size:9px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--tx3);transition:all .2s;}
+.qdot.done{background:var(--o5);color:#0e0a06;}
+.qlbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bd);padding:0 26px;height:56px;
+  flex-shrink:0;display:flex;align-items:center;gap:12px;z-index:50;}
+.topbar h1{font-size:14px;font-weight:600;flex:1;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-acts{display:flex;gap:6px;flex-shrink:0;}
+.btn{padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:700;border:1px solid var(--bd2);
+  background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.btn:hover{background:var(--bg3);color:var(--tx);}
+.btn-o{background:var(--o1);border-color:var(--o1);color:#0e0a06;}
+.btn-o:hover{background:var(--o1l);border-color:var(--o1l);color:#0e0a06;}
+.mtog{display:none;background:transparent;border:1px solid var(--bd);color:var(--tx2);
+  padding:6px 10px;border-radius:var(--rs);cursor:pointer;font-size:16px;}
+
+/* ── VIEW TABS ── */
+.vtabs{display:flex;padding:0 26px;background:var(--bg2);border-bottom:1px solid var(--bd);flex-wrap:wrap;}
+.vtab{padding:11px 16px;font-size:12px;font-weight:700;cursor:pointer;border:none;
+  border-bottom:3px solid transparent;background:transparent;color:var(--tx3);transition:all .15s;}
+.vtab.active{color:var(--o1);border-bottom-color:var(--o1);}
+.vtab:hover:not(.active){color:var(--tx2);}
+
+/* ── CONTENT ── */
+.cnt{padding:22px 26px 64px;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,rgba(251,146,60,.12),rgba(249,115,22,.07));
+  border:1px solid var(--bd2);border-radius:var(--r);padding:26px;margin-bottom:20px;}
+.hero h2{font-size:20px;font-weight:800;margin-bottom:8px;}
+.hero p{font-size:13.5px;color:var(--tx2);max-width:600px;line-height:1.7;}
+.badges{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap;}
+.bdg{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-bottom:20px;}
+.sc{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center;}
+.sc .n{font-size:26px;font-weight:800;}.sc .l{font-size:11px;color:var(--tx3);margin-top:2px;}
+
+/* ── GENERIC LAYOUT ── */
+.stit{font-size:11px;font-weight:800;color:var(--tx3);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:12px;margin-top:24px;}
+.pbw{margin-bottom:20px;}
+.pblbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--tx2);margin-bottom:7px;}
+.pbtrack{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+.pbfill{height:7px;background:linear-gradient(90deg,var(--o2),var(--o3));border-radius:4px;transition:width .5s;width:0%;}
+
+/* ── TEMA GRID ── */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px;margin-bottom:22px;}
+.tcard{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);
+  padding:18px 18px 18px 22px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
+.tcard:hover{transform:translateY(-3px);box-shadow:var(--sh);}
+.tcard .tb{position:absolute;left:0;top:0;width:5px;height:100%;border-radius:2px 0 0 2px;}
+.tcard .tic{font-size:24px;margin-bottom:8px;}
+.tcard h3{font-size:14px;font-weight:700;margin-bottom:5px;}
+.tcard p{font-size:12px;color:var(--tx3);line-height:1.5;}
+.tcard .tcat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+
+/* ── TOOLS GRID ── */
+.tl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px;margin-bottom:22px;}
+.tl-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);
+  padding:14px;cursor:pointer;transition:all .2s;}
+.tl-card:hover{border-color:var(--o1);transform:translateY(-2px);box-shadow:var(--sh);}
+.tl-card h3{font-size:12.5px;font-weight:700;margin-bottom:4px;}
+.tl-card p{font-size:11px;color:var(--tx3);}
+
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:14px;}
+.ctit{font-size:10.5px;font-weight:800;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;}
+
+/* ── TEMA DETALHE ── */
+.qhdr{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd);}
+.qbdg{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;flex-shrink:0;margin-top:2px;}
+.qtwrap{flex:1;}
+.qtwrap h2{font-size:19px;font-weight:800;line-height:1.3;}
+.qsub{font-size:13px;color:var(--tx3);margin-top:4px;font-style:italic;}
+.qnav{display:flex;gap:7px;margin-top:11px;align-items:center;flex-wrap:wrap;}
+.qnbtn{padding:5px 12px;border-radius:14px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--bd2);background:transparent;color:var(--tx3);cursor:pointer;transition:all .15s;}
+.qnbtn:hover{background:var(--bg3);color:var(--tx2);}
+.done-btn{padding:6px 13px;border-radius:14px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--bd2);background:transparent;color:var(--tx2);cursor:pointer;transition:all .2s;margin-left:auto;}
+.done-btn:hover{background:var(--bg3);}
+.done-btn.done{background:rgba(132,204,22,.18);border-color:var(--o5);color:var(--o5l);}
+
+/* ── KEYWORDS ── */
+.kpills{display:flex;flex-wrap:wrap;gap:6px;}
+.kp{padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:600;
+  background:rgba(251,146,60,.12);color:var(--o1l);border:1px solid rgba(251,146,60,.25);}
+
+/* ── ANSWER BODY ── */
+.ab{font-size:14.5px;line-height:1.88;color:var(--tx);}
+.ab p{margin-bottom:13px;}
+.ab ul,.ab ol{padding-left:1.4rem;margin-bottom:13px;}
+.ab li{margin-bottom:9px;}
+.ab strong{color:var(--o1l);font-weight:700;}
+.ab em{color:var(--o3l);}
+.ab h4{font-size:14px;font-weight:800;color:var(--o3l);margin:18px 0 9px;
+  padding-bottom:5px;border-bottom:1px solid var(--bd);}
+.note{background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.18);
+  border-left:3px solid var(--o6);border-radius:var(--rs);padding:11px 15px;
+  margin:12px 0;font-size:13.5px;color:var(--o6l);}
+.note strong{color:var(--o6l);}
+.highlight{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);
+  border-left:3px solid var(--o1);border-radius:var(--rs);padding:11px 15px;
+  margin:12px 0;font-size:13.5px;color:var(--o1l);}
+.highlight strong{color:var(--o1l);}
+.contrast{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);
+  border-left:3px solid var(--o4);border-radius:var(--rs);padding:11px 15px;
+  margin:12px 0;font-size:13.5px;color:var(--o4l);}
+.contrast strong{color:var(--o4l);}
+.green-box{background:rgba(132,204,22,.07);border:1px solid rgba(132,204,22,.18);
+  border-left:3px solid var(--o5);border-radius:var(--rs);padding:11px 15px;
+  margin:12px 0;font-size:13.5px;color:var(--o5l);}
+.green-box strong{color:var(--o5l);}
+.mnem{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);
+  border-left:3px solid var(--o7);border-radius:var(--rs);padding:12px 15px;
+  margin:13px 0;font-size:13.5px;color:var(--o7l);}
+.mnem strong{color:var(--o7l);}
+.refbox{background:var(--bg3);border-radius:var(--rs);padding:12px 15px;
+  font-size:12px;color:var(--tx3);line-height:1.75;border:1px solid var(--bd);}
+
+/* ── CONNECTIONS ── */
+.conn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:16px;}
+.conn-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:15px;transition:all .2s;}
+.conn-card:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+
+/* ── MIND MAP ── */
+.mmwrap{width:100%;overflow-x:auto;padding:4px 0;}
+.mmwrap svg{display:block;min-width:840px;}
+
+/* ── COMPARE ── */
+.ctable{width:100%;border-collapse:collapse;margin:12px 0;}
+.ctable th,.ctable td{padding:10px 13px;border:1px solid var(--bd2);vertical-align:top;text-align:left;font-size:12.5px;}
+.ctable th{background:var(--bg4);color:var(--tx2);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
+.ctable tr:nth-child(even) td{background:rgba(255,255,255,.012);}
+.ctable td:first-child{font-weight:700;}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:32px;margin:10px 0 20px;}
+.tl::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--o1),var(--o3),var(--o5),var(--o6),var(--o7));}
+.tli{position:relative;margin-bottom:20px;}
+.tli-in{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:15px 16px;}
+.tl-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.tl-yr{font-size:11px;font-weight:800;padding:3px 9px;border-radius:10px;flex-shrink:0;}
+.tl-tag{font-size:11px;font-weight:700;opacity:.85;}
+.tl-title{font-size:14px;font-weight:700;margin-bottom:6px;}
+.tl-body{font-size:13px;color:var(--tx2);line-height:1.65;}
+.tl-body strong{color:var(--tx);font-weight:600;}
+
+/* ── FLASHCARDS ── */
+.fcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:15px;margin-bottom:20px;}
+.fc{height:210px;perspective:1000px;cursor:pointer;}
+.fcin{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.fc.flip .fcin{transform:rotateY(180deg);}
+.fcf,.fcb{position:absolute;width:100%;height:100%;backface-visibility:hidden;
+  background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;padding:18px;
+  text-align:center;flex-direction:column;gap:7px;}
+.fcb{transform:rotateY(180deg);background:var(--bg3);}
+.fctag{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);}
+.fcf p{font-size:13.5px;font-weight:700;color:var(--tx);line-height:1.5;}
+.fcb p{font-size:12px;color:var(--tx2);line-height:1.6;}
+.fchint{font-size:10px;color:var(--tx3);position:absolute;bottom:9px;right:11px;}
+
+/* ── QUIZ ── */
+.qshell{max-width:700px;margin:0 auto;}
+.qpbar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:20px;}
+.qpfill{height:5px;background:linear-gradient(90deg,var(--o1),var(--o3));border-radius:3px;transition:width .4s;}
+.qinfo{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:12.5px;color:var(--tx3);}
+.qq-card{background:var(--bg2);border:1px solid var(--bd2);border-radius:var(--r);padding:22px;margin-bottom:14px;}
+.qq-tema{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.qq-text{font-size:15px;font-weight:600;line-height:1.65;color:var(--tx);margin-bottom:4px;}
+.qopts{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.qopt{padding:12px 16px;border-radius:var(--rs);border:1px solid var(--bd2);background:var(--bg3);
+  color:var(--tx2);font-size:13.5px;cursor:pointer;text-align:left;transition:all .15s;line-height:1.5;}
+.qopt:hover:not(:disabled){border-color:var(--o1);color:var(--tx);}
+.qopt.correct{background:rgba(132,204,22,.15);border-color:var(--o5);color:var(--o5l);}
+.qopt.wrong{background:rgba(239,68,68,.1);border-color:var(--o4);color:var(--o4l);}
+.qfb{border-radius:var(--r);padding:15px 17px;margin-top:14px;display:none;line-height:1.7;}
+.qfb.show{display:block;}
+.qfb.ok{background:rgba(132,204,22,.1);border:1px solid rgba(132,204,22,.3);}
+.qfb.nok{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);}
+.qfb-head{font-size:14px;font-weight:800;margin-bottom:7px;}
+.qfb-body{font-size:13px;color:var(--tx2);line-height:1.65;}
+.qfb-body strong{color:var(--tx);font-weight:600;}
+.qfb-ref{font-size:11.5px;color:var(--tx3);margin-top:9px;padding-top:9px;border-top:1px solid var(--bd);}
+.qnav{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+.sbtn{padding:7px 14px;border-radius:14px;font-size:12px;font-weight:700;
+  border:1px solid var(--bd2);background:transparent;color:var(--tx3);cursor:pointer;transition:all .15s;}
+.sbtn:hover{background:var(--bg3);color:var(--tx2);}
+.score-card{background:linear-gradient(135deg,rgba(251,146,60,.12),rgba(249,115,22,.08));
+  border:1px solid var(--bd2);border-radius:var(--r);padding:28px;text-align:center;}
+.score-card h2{font-size:22px;font-weight:800;margin-bottom:8px;}
+.score-card p{font-size:14px;color:var(--tx2);margin-bottom:18px;}
+.big-score{font-size:56px;font-weight:900;margin:12px 0;}
+
+/* ── AI ── */
+.aiwrap{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;}
+.qps{display:flex;flex-wrap:wrap;gap:6px;padding:11px 13px 0;}
+.qpbtn{padding:5px 10px;border-radius:13px;font-size:11.5px;border:1px solid var(--bd2);
+  background:transparent;color:var(--tx3);cursor:pointer;transition:all .15s;}
+.qpbtn:hover{background:var(--bg3);color:var(--tx2);}
+.aimsgs{padding:13px;min-height:160px;max-height:320px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:11px;}
+.aimsgs::-webkit-scrollbar{width:4px;}
+.aimsgs::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px;}
+.aimsg{display:flex;gap:9px;align-items:flex-start;}
+.aiav{width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+.aimsg.user .aiav{background:rgba(251,146,60,.2);color:var(--o1);}
+.aimsg.bot .aiav{background:rgba(132,204,22,.18);color:var(--o5l);}
+.aibub{background:var(--bg3);border-radius:var(--rs);padding:9px 13px;
+  font-size:13.5px;line-height:1.75;flex:1;border:1px solid var(--bd);color:var(--tx);}
+.aimsg.user .aibub{background:rgba(251,146,60,.07);border-color:rgba(251,146,60,.18);}
+.airow{display:flex;gap:7px;padding:9px 13px;border-top:1px solid var(--bd);}
+.aiinp{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:var(--rs);
+  padding:9px 12px;color:var(--tx);font-size:13px;outline:none;resize:none;font-family:inherit;}
+.aiinp:focus{border-color:var(--o1);}
+.aisend{padding:9px 15px;background:var(--o1);border:none;border-radius:var(--rs);
+  color:#0e0a06;font-weight:800;font-size:12.5px;cursor:pointer;transition:background .15s;flex-shrink:0;}
+.aisend:hover{background:var(--o1l);}.aisend:disabled{opacity:.5;cursor:not-allowed;}
+.typing{display:flex;gap:5px;align-items:center;padding:4px 0;}
+.dot{width:6px;height:6px;background:var(--o1);border-radius:50%;animation:bnc .9s infinite;}
+.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
+@keyframes bnc{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;}
+.ovl.show{display:block;}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}.mtog{display:block;}
+  .cnt{padding:16px 14px 64px;}.vtabs{padding:0 14px;}.topbar{padding:0 12px;}
+  .fcgrid{grid-template-columns:1fr 1fr;}.tgrid{grid-template-columns:1fr;}}
+@keyframes fU{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fU .28s ease forwards;}
+</style>
+</head>
+<body>
+<div class="ovl" id="ovl" onclick="closeSb()"></div>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <h2>Saúde Coletiva &amp; Redes SUS</h2>
+    <p>UNINASSAU · Psicologia · Gestão em Saúde</p>
+  </div>
+  <div class="sb-pb">
+    <div class="sb-pb-l"><span>Progresso</span><span id="pbl2">0/8</span></div>
+    <div class="sb-bar"><div class="sb-bar-f" id="pf2"></div></div>
+  </div>
+  <div class="sb-sec">Ferramentas</div>
+  <ul class="sbn">
+    <li><a id="sb-home" onclick="goHome()">🏠 <span class="qlbl">Início</span></a></li>
+    <li><a id="sb-quiz" onclick="goSec('quiz')">✏️ <span class="qlbl">Quiz Completo</span></a></li>
+    <li><a id="sb-mm" onclick="goSec('mm')">🗺️ <span class="qlbl">Mapas Mentais</span></a></li>
+    <li><a id="sb-fc" onclick="goSec('fc')">🃏 <span class="qlbl">Flashcards</span></a></li>
+    <li><a id="sb-tl" onclick="goSec('tl')">📅 <span class="qlbl">Linha do Tempo</span></a></li>
+    <li><a id="sb-cmp" onclick="goSec('cmp')">⚖️ <span class="qlbl">Comparativo</span></a></li>
+    <li><a id="sb-conn" onclick="goSec('conn')">🔗 <span class="qlbl">Conexões entre Temas</span></a></li>
+  </ul>
+  <div class="sb-sec">Temas</div>
+  <ul class="sbn" id="sb-temas"></ul>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <button class="mtog" onclick="toggleSb()">☰</button>
+    <h1 id="toptit">Saúde Coletiva e Redes de Atenção à Saúde</h1>
+    <div class="tb-acts">
+      <button class="btn" onclick="goSec('quiz')">✏️ Quiz</button>
+      <button class="btn" onclick="goSec('tl')">📅 Linha do Tempo</button>
+      <button class="btn btn-o" onclick="goSec('mm')">🗺️ Mapas</button>
+    </div>
+  </div>
+  <div class="scr" id="scr">
+  <!-- HOME -->
+  <div id="sec-home" class="cnt">
+    <div class="hero fu">
+      <h2>Saúde Coletiva e Redes de Atenção à Saúde 🏥</h2>
+      <p>Dois blocos integrados: <strong>Para Além da Doença</strong> (ESF, modelo ampliado, determinantes sociais) e <strong>Redes de Atenção no SUS</strong> (RAS, RAPS, RUE, fluxos e papel do psicólogo). Conteúdo aprofundado, quiz referenciado, mapas mentais, linha do tempo, flashcards e IA.</p>
+      <div class="badges">
+        <span class="bdg" style="background:rgba(251,146,60,.15);color:var(--o1l);border:1px solid rgba(251,146,60,.3)">8 Temas</span>
+        <span class="bdg" style="background:rgba(249,115,22,.15);color:var(--o2l);border:1px solid rgba(249,115,22,.3)">Quiz Navegável</span>
+        <span class="bdg" style="background:rgba(132,204,22,.15);color:var(--o5l);border:1px solid rgba(132,204,22,.3)">Mapas Mentais</span>
+        <span class="bdg" style="background:rgba(34,211,238,.15);color:var(--o6l);border:1px solid rgba(34,211,238,.3)">Linha do Tempo</span>
+        <span class="bdg" style="background:rgba(167,139,250,.15);color:var(--o7l);border:1px solid rgba(167,139,250,.3)">Conexões entre Temas</span>
+      </div>
+    </div>
+    <div class="pbw">
+      <div class="pblbl"><span>Progresso de estudo</span><span id="pbl1">0 de 8 temas concluídos</span></div>
+      <div class="pbtrack"><div class="pbfill" id="pf1"></div></div>
+    </div>
+    <div class="stats-row">
+      <div class="sc"><div class="n" id="stat-done" style="color:var(--o5)">0</div><div class="l">Estudados</div></div>
+      <div class="sc"><div class="n" id="stat-quiz" style="color:var(--o1)">0</div><div class="l">Quiz respondidos</div></div>
+      <div class="sc"><div class="n" style="color:var(--o3)">8</div><div class="l">Temas</div></div>
+      <div class="sc"><div class="n" style="color:var(--o6)">16</div><div class="l">Questões</div></div>
+    </div>
+    <div class="stit">📁 Bloco I — Para Além da Doença (ESF e Saúde Coletiva)</div>
+    <div class="tgrid" id="grid-bloco1"></div>
+    <div class="stit">📁 Bloco II — Redes de Atenção à Saúde no SUS</div>
+    <div class="tgrid" id="grid-bloco2"></div>
+    <div class="stit">Ferramentas de aprendizagem</div>
+    <div class="tl-grid">
+      <div class="tl-card" onclick="goSec('quiz')"><h3>✏️ Quiz Completo</h3><p>16 questões navegáveis com gabarito e referências</p></div>
+      <div class="tl-card" onclick="goSec('mm')"><h3>🗺️ Mapas Mentais</h3><p>Diagrama visual de cada tema</p></div>
+      <div class="tl-card" onclick="goSec('fc')"><h3>🃏 Flashcards</h3><p>Recuperação espaçada — vire e teste</p></div>
+      <div class="tl-card" onclick="goSec('tl')"><h3>📅 Linha do Tempo</h3><p>História do SUS e das políticas de saúde</p></div>
+      <div class="tl-card" onclick="goSec('cmp')"><h3>⚖️ Comparativo</h3><p>Modelos e serviços lado a lado</p></div>
+      <div class="tl-card" onclick="goSec('conn')"><h3>🔗 Conexões</h3><p>Como os temas se articulam entre si</p></div>
+    </div>
+  </div>
+
+  <!-- TEMA DETALHE -->
+  <div id="sec-tema" style="display:none">
+    <div class="vtabs" id="vtabs-bar">
+      <button class="vtab active" data-p="conteudo" onclick="swTab('conteudo',this)">📖 Conteúdo</button>
+      <button class="vtab" data-p="mapa" onclick="swTab('mapa',this)">🗺️ Mapa Mental</button>
+      <button class="vtab" data-p="conexoes" onclick="swTab('conexoes',this)">🔗 Conexões</button>
+      <button class="vtab" data-p="ia" onclick="swTab('ia',this)">🤖 Aprofundar com IA</button>
+    </div>
+    <div class="cnt">
+      <div class="qhdr fu">
+        <div class="qbdg" id="qbdg"></div>
+        <div class="qtwrap">
+          <h2 id="qtit"></h2>
+          <div class="qsub" id="qsub"></div>
+          <div class="qnav">
+            <button class="qnbtn" id="btn-prev" onclick="navQ(-1)">← Anterior</button>
+            <button class="qnbtn" id="btn-next" onclick="navQ(1)">Próximo →</button>
+            <button class="qnbtn" onclick="goQuizT()" style="border-color:var(--o2);color:var(--o2l)">✏️ Quiz deste tema</button>
+            <button class="done-btn" id="done-btn" onclick="toggleDone()">Marcar como estudado</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel active" id="panel-conteudo">
+        <div class="card fu"><div class="ctit">Palavras-chave e conceitos</div><div class="kpills" id="kpills"></div></div>
+        <div class="card fu"><div id="mnem-wrap"></div><div class="ab" id="ab-main"></div></div>
+        <div class="card fu"><div class="ctit">Referências e Base Legal</div><div class="refbox" id="refbox"></div></div>
+      </div>
+      <div class="panel" id="panel-mapa">
+        <div class="card fu"><div class="ctit">Mapa mental — <span id="mm-tit"></span></div><div class="mmwrap" id="q-mm"></div></div>
+        <div class="ab"><div class="note">💡 <strong>Dica:</strong> Feche os olhos após estudar e tente reconstruir o mapa mentalmente. Essa reconstrução ativa é mais eficaz que a leitura passiva.</div></div>
+      </div>
+      <div class="panel" id="panel-conexoes">
+        <div class="card fu"><div class="ctit">Articulações, dependências e diálogos</div><div class="conn-grid" id="conn-grid"></div></div>
+        <div class="card fu"><div class="ctit">Mapa de conexões — <span id="conn-tit"></span></div><div class="mmwrap" id="conn-mm"></div></div>
+      </div>
+      <div class="panel" id="panel-ia">
+        <div class="aiwrap fu">
+          <div class="qps" id="qps"></div>
+          <div class="aimsgs" id="aimsgs"></div>
+          <div class="airow">
+            <textarea class="aiinp" id="ai-inp" rows="2" placeholder="Faça uma pergunta sobre este tema..."></textarea>
+            <button class="aisend" id="ai-btn" onclick="sendAI()">Enviar</button>
+          </div>
+        </div>
+        <div class="ab" style="margin-top:12px"><div class="note">💡 <strong>Elaboração ativa:</strong> Formular suas próprias perguntas aprofunda muito mais a compreensão do que apenas ler respostas prontas.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="sec-quiz" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">✏️ Quiz Completo — 16 Questões</div>
+      <div class="ab"><p style="margin-bottom:16px">Responda em sequência. Após cada resposta veja o gabarito comentado com referência. Use "📖 Estudar este tema" para consultar o conteúdo. Navegue livremente com ← →.</p></div>
+      <div class="qshell" id="qshell"></div>
+    </div>
+  </div>
+
+  <!-- MAPAS MENTAIS -->
+  <div id="sec-mm" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">🗺️ Mapas Mentais — todos os temas</div>
+      <div class="tl-grid" id="mm-btns" style="margin-bottom:16px"></div>
+      <div class="card" id="mm-main"></div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="sec-fc" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">🃏 Flashcards — clique para revelar</div>
+      <div class="fcgrid" id="fcgrid"></div>
+      <div class="ab"><div class="note">💡 <strong>Recuperação espaçada:</strong> Hoje → amanhã → 3 dias → 1 semana. Técnica de memorização mais eficaz comprovada pela ciência.</div></div>
+    </div>
+  </div>
+
+  <!-- LINHA DO TEMPO -->
+  <div id="sec-tl" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">📅 Linha do Tempo — História das Políticas de Saúde no Brasil</div>
+      <div class="ab"><p style="margin-bottom:20px">Contextualizar as políticas de saúde em seus momentos históricos é essencial para compreender o SUS atual e responder questões dissertativas. Cada marco é acompanhado de seu significado prático.</p></div>
+      <div class="tl" id="tl-wrap"></div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVO -->
+  <div id="sec-cmp" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">⚖️ Comparativo — Modelos e Serviços</div>
+      <div class="card">
+        <div class="ctit">Modelo Biomédico vs. Modelo Ampliado de Saúde</div>
+        <div style="overflow-x:auto"><table class="ctable" id="ctable-bm"></table></div>
+      </div>
+      <div class="card">
+        <div class="ctit">Níveis de Atenção no SUS</div>
+        <div style="overflow-x:auto"><table class="ctable" id="ctable-niveis"></table></div>
+      </div>
+      <div class="card">
+        <div class="ctit">Tipos de CAPS</div>
+        <div style="overflow-x:auto"><table class="ctable" id="ctable-caps"></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONEXÕES -->
+  <div id="sec-conn" style="display:none">
+    <div class="cnt">
+      <div class="stit" style="margin-top:0">🔗 Conexões entre Temas e Serviços</div>
+      <div class="card fu"><div class="ctit">Mapa geral — como os temas se articulam</div><div class="mmwrap" id="global-mm"></div></div>
+      <div class="stit">Articulações detalhadas</div>
+      <div id="global-conn-list"></div>
+    </div>
+  </div>
+
+  </div></div></div><script>
+const T=[
+{id:1,bloco:1,icon:'🏥',cor:'#fb923c',
+title:'ESF — Estratégia Saúde da Família',
+sub:'Principal modelo da atenção básica no SUS',
+kws:['ESF','Atenção Básica','UBS','território','vínculo','continuidade','equipe multiprofissional','ACS','NASF','porta de entrada'],
+mnem:'ESF = <strong>T-V-C-E</strong>: <strong>T</strong>erritório + <strong>V</strong>ínculo + <strong>C</strong>ontinuidade + <strong>E</strong>quipe multi. A ESF não espera a doença — ela <strong>atua na vida</strong> das pessoas.',
+content:`<h4>O que é a ESF?</h4>
+<p>A <strong>Estratégia Saúde da Família (ESF)</strong> é o principal modelo de organização da Atenção Básica no SUS, instituída em 1994 (então chamada Programa Saúde da Família — PSF) e consolidada pela Política Nacional de Atenção Básica (PNAB). Reorganiza o cuidado em saúde em torno da <strong>vida das pessoas em seu território</strong> — e não apenas de suas doenças.</p>
+<h4>Princípios estruturantes</h4>
+<ul>
+<li><strong>Territorialização:</strong> cada equipe é responsável por uma área geográfica definida (3.000 a 4.000 pessoas), conhecendo as condições de vida, vulnerabilidades e recursos da comunidade;</li>
+<li><strong>Vínculo:</strong> relação contínua de confiança entre equipe e usuários — o contrário do atendimento pontual e anônimo;</li>
+<li><strong>Continuidade do cuidado:</strong> acompanhamento ao longo do tempo, não apenas na doença;</li>
+<li><strong>Integralidade:</strong> atenção à pessoa em todas as dimensões — física, mental, social e familiar;</li>
+<li><strong>Equipe multiprofissional:</strong> médico, enfermeiro, técnico de enfermagem e Agentes Comunitários de Saúde (ACS). Pode contar com o Núcleo Ampliado de Saúde da Família (NASF) — psicólogo, fisioterapeuta, nutricionista, assistente social.</li>
+</ul>
+<h4>O Agente Comunitário de Saúde (ACS)</h4>
+<p>O ACS é a <strong>ponte entre a comunidade e o serviço de saúde</strong>. Mora no território, realiza visitas domiciliares, identifica situações de vulnerabilidade, acompanha famílias cadastradas e é figura central na ESF. Seu trabalho humaniza o cuidado e garante a longitudinalidade.</p>
+<h4>Por que a ESF é diferente?</h4>
+<div class="highlight">🏥 A UBS tradicional espera o paciente adoecer e buscar atendimento.<br><br>🌿 A ESF vai ao território, conhece as famílias, identifica riscos <em>antes</em> que virem doença — e atua sobre as causas, não apenas os sintomas.</div>
+<h4>ESF e Saúde Mental</h4>
+<p>A ESF é a <strong>porta de entrada para o cuidado em saúde mental</strong>. O psicólogo pode atuar via NASF, realizando apoio matricial às equipes, escuta qualificada, identificação precoce de sofrimento e articulação com o CAPS quando necessário. O conceito-chave é o <strong>matriciamento</strong>: o psicólogo apoia a equipe sem necessariamente assumir o caso individualmente.</p>
+<div class="note">📌 <strong>Para a prova:</strong> ESF = atenção básica + território + vínculo + equipe multi. ACS = elo entre comunidade e serviço. NASF = ampliação do núcleo com outros profissionais. Matriciamento = apoio do especialista à equipe de referência.</div>`,
+ref:'Brasil. MS (2006). Política Nacional de Atenção Básica — PNAB. | Brasil. MS (2017). PNAB revisada. Portaria 2.436/2017. | Starfield, B. (2002). Atenção Primária: equilíbrio entre necessidades de saúde, serviços e tecnologia.',
+mm:{center:'ESF',bs:[
+  {l:'Princípios',c:'#fb923c',s:['Territorialização','Vínculo','Continuidade','Integralidade']},
+  {l:'Equipe',c:'#fbbf24',s:['Médico de família','Enfermeiro','Técn. enfermagem','ACS (agente comunit.)']},
+  {l:'Ampliação (NASF)',c:'#84cc16',s:['Psicólogo','Fisioterapeuta','Nutricionista','Assist. social']},
+  {l:'Funções',c:'#22d3ee',s:['Promoção da saúde','Prevenção','Cuidado integral','Visita domiciliar']}]},
+conns:[
+  {tipo:'Integra',cor:'#fbbf24',nome:'Modelo Ampliado de Saúde',desc:'A ESF opera a partir do modelo ampliado: cuidado integral que considera fatores biopsicossociais, não apenas a queixa orgânica.'},
+  {tipo:'Porta de entrada',cor:'#22d3ee',nome:'RAPS / CAPS',desc:'A ESF identifica sofrimento mental e encaminha ao CAPS quando necessário. O CAPS apoia a ESF via matriciamento.'},
+  {tipo:'Articula com',cor:'#84cc16',nome:'Determinantes Sociais',desc:'A ESF age sobre determinantes: articula com CRAS, assistência social e programas de renda para enfrentar causas estruturais do adoecimento.'},
+  {tipo:'Opõe-se a',cor:'#ef4444',nome:'Modelo Biomédico',desc:'O modelo biomédico trata a doença isolada; a ESF trata a pessoa em contexto — território, família e comunidade.'}],
+fQ:'Quais são os 4 princípios estruturantes da ESF?',fA:'Territorialização, Vínculo, Continuidade do cuidado e Integralidade — operados por equipe multiprofissional (médico, enfermeiro, TEnf, ACS). NASF amplia com psicólogo, fisioterapeuta, nutricionista.',
+quizzes:[
+  {q:'A Estratégia Saúde da Família (ESF) diferencia-se da UBS tradicional principalmente porque:',
+   opts:[{t:'Realiza apenas procedimentos de alta complexidade',c:false},{t:'Atua no território com vínculo e continuidade, antecipando agravos antes que se tornem doenças',c:true},{t:'Funciona exclusivamente para atendimento de urgência',c:false},{t:'É restrita ao atendimento médico especializado',c:false}],
+   ok:'Correto! A ESF age no território com vínculo e continuidade — não apenas espera o usuário adoecer para atendê-lo.',
+   nok:'A ESF é atenção básica territorializada: vai ao encontro das pessoas, identificando riscos antes que virem doença.',
+   ref:'Brasil, MS (2017). Política Nacional de Atenção Básica. Portaria 2.436/2017.'},
+  {q:'O papel do Agente Comunitário de Saúde (ACS) na ESF é:',
+   opts:[{t:'Prescrever medicamentos para casos simples',c:false},{t:'Ser a ponte entre a comunidade e o serviço de saúde, realizando visitas domiciliares e identificando vulnerabilidades',c:true},{t:'Substituir o médico em consultas de rotina',c:false},{t:'Coordenar os encaminhamentos para o hospital',c:false}],
+   ok:'Correto! O ACS mora no território, visita as famílias e humaniza o cuidado — é a figura central da longitudinalidade na ESF.',
+   nok:'O ACS não prescreve nem substitui o médico. Ele é o elo humano entre comunidade e equipe de saúde.',
+   ref:'Brasil, MS (2017). PNAB. Portaria 2.436/2017, art. sobre composição da equipe.'}]
+},
+
+{id:2,bloco:1,icon:'🔄',cor:'#f97316',
+title:'Modelo Biomédico vs. Modelo Ampliado',
+sub:'Duas formas radicalmente diferentes de entender o adoecimento',
+kws:['modelo biomédico','modelo ampliado','determinação social da saúde','cuidado integral','OMS 1948','campos de Lalonde','biopsicossocial','Engel','medicalização','doença x saúde'],
+mnem:'Biomédico = <strong>D</strong>oença + <strong>M</strong>edicamento + <strong>P</strong>rofissional central. Ampliado = <strong>P</strong>essoa + <strong>C</strong>ontexto + <strong>E</strong>quipe. Lembre: <strong>"Por que ele bebe?"</strong> — essa é a pergunta do modelo ampliado.',
+content:`<h4>Modelo Biomédico</h4>
+<p>Baseado na biomedicina do século XIX, o <strong>modelo biomédico</strong> tem como premissas:</p>
+<ul>
+<li>A doença é um desvio de normas biológicas mensuráveis;</li>
+<li>O foco está na <strong>doença</strong> (e nos órgãos doentes), não na pessoa;</li>
+<li>O profissional de saúde — especialmente o médico — é o centro ativo; o paciente é passivo;</li>
+<li>A principal intervenção é <strong>farmacológica ou cirúrgica</strong>;</li>
+<li>O atendimento é <strong>pontual e isolado</strong> — cada consulta é um episódio desconectado.</li>
+</ul>
+<h4>Modelo Ampliado de Saúde</h4>
+<p>O modelo ampliado parte da definição de saúde da <strong>OMS (1948)</strong>: "estado de completo bem-estar físico, mental e social — e não apenas a ausência de doença." Incorpora:</p>
+<ul>
+<li><strong>Determinantes sociais da saúde (DSS):</strong> renda, educação, trabalho, habitação, saneamento, cultura — todos influenciam o adoecer e o recuperar;</li>
+<li><strong>Biopsicossocial (Engel, 1977):</strong> integra dimensão biológica, psicológica e social na compreensão do adoecimento;</li>
+<li><strong>Construção conjunta do cuidado:</strong> o usuário é sujeito ativo, co-responsável pelo seu processo de saúde;</li>
+<li><strong>Acompanhamento contínuo</strong> no território, não consultas isoladas.</li>
+</ul>
+<h4>O Caso de José — A diferença na prática</h4>
+<div class="contrast">🔴 <strong>Modelo biomédico:</strong> José chega com queixa de cansaço e insônia → diagnóstico de alcoolismo → medicação → alta. Resultado: sem melhora.<br><br>🟢 <strong>Modelo ampliado:</strong> a equipe pergunta por que José bebe. Descobre conflito familiar, desemprego e isolamento. Articula escuta qualificada, apoio social, grupos de convivência, CAPS AD se necessário. Resultado: cuidado integral.</div>
+<h4>Campos de Lalonde (1974)</h4>
+<p>O relatório Lalonde (Canadá, 1974) identificou <strong>4 campos que determinam a saúde</strong>: biologia humana (genética, envelhecimento), ambiente (físico, social), estilo de vida (comportamentos) e organização dos serviços de saúde. Mostrou que os serviços de saúde respondem por apenas <strong>~10–20%</strong> do estado de saúde da população — o restante vem dos outros três campos. Isso fundamenta a promoção de saúde.</p>
+<div class="note">📌 <strong>Para a prova:</strong> OMS 1948 = saúde como bem-estar completo (físico, mental e social). Modelo ampliado ≠ modelo biomédico. Lalonde: serviços de saúde não são os principais determinantes da saúde populacional.</div>`,
+ref:'OMS (1948). Constituição da Organização Mundial da Saúde. | Engel, G. (1977). The need for a new medical model. Science. | Lalonde, M. (1974). A new perspective on the health of Canadians. | Ministério da Saúde (2010). As cartas de promoção da saúde.',
+mm:{center:'Modelo Ampliado',bs:[
+  {l:'Bases conceituais',c:'#f97316',s:['OMS 1948: bem-estar total','Biopsicossocial (Engel)','Campos Lalonde (1974)','Determinação social da saúde']},
+  {l:'vs. Biomédico',c:'#ef4444',s:['Foco na doença → na pessoa','Passivo → sujeito ativo','Medicação → cuidado integral','Pontual → longitudinal']},
+  {l:'Determinantes Sociais',c:'#fbbf24',s:['Renda e trabalho','Habitação e saneamento','Educação e cultura','Família e comunidade']},
+  {l:'Na ESF',c:'#84cc16',s:['Escuta qualificada','Cuidado biopsicossocial','Construção conjunta','Acompanhamento contínuo']}]},
+conns:[
+  {tipo:'Fundamenta',cor:'#fb923c',nome:'ESF',desc:'A ESF opera a partir do modelo ampliado — sem ele, seria apenas mais um ambulatório de medicina geral.'},
+  {tipo:'Articula com',cor:'#fbbf24',nome:'Determinantes Sociais da Saúde',desc:'O modelo ampliado reconhece que saúde é produzida fora dos serviços: nas condições de vida, trabalho, renda e território.'},
+  {tipo:'Opõe-se a',cor:'#ef4444',nome:'Medicalização',desc:'A medicalização (redução de problemas sociais a diagnósticos e medicamentos) é a expressão mais extrema do modelo biomédico.'},
+  {tipo:'Integra',cor:'#22d3ee',nome:'Promoção da Saúde',desc:'Promover saúde é criar condições para que as pessoas vivam melhor — vai muito além de evitar a doença.'}],
+fQ:'Qual a diferença central entre modelo biomédico e modelo ampliado?',fA:'Biomédico = foco na doença, médico central, medicação, atendimento pontual. Ampliado (OMS 1948) = pessoa em contexto biopsicossocial, sujeito ativo, cuidado integral e longitudinal, determinantes sociais.',
+quizzes:[
+  {q:'Segundo o modelo ampliado de saúde, a abordagem mais adequada para um paciente com abuso de álcool é:',
+   opts:[{t:'Prescrever medicação para abstinência e encerrar a consulta',c:false},{t:'Investigar os determinantes sociais e emocionais do abuso e construir um plano de cuidado integral',c:true},{t:'Encaminhar imediatamente ao hospital para desintoxicação',c:false},{t:'Orientar a abstinência e marcar retorno em 30 dias',c:false}],
+   ok:'Correto! O modelo ampliado pergunta "por que ele bebe?" — e articula escuta qualificada, apoio social, saúde mental e determinantes sociais.',
+   nok:'O modelo ampliado não se limita à medicação ou à abstinência: investiga causas e constrói cuidado conjunto.',
+   ref:'Engel, G. (1977). The need for a new medical model. Science, 196(4286), 129-136.'},
+  {q:'A definição de saúde da OMS (1948) fundamenta o modelo ampliado porque:',
+   opts:[{t:'Reduz a saúde à ausência de doença',c:false},{t:'Define saúde como completo bem-estar físico, mental e social — não apenas ausência de doença',c:true},{t:'Foca exclusivamente nos aspectos biológicos do adoecimento',c:false},{t:'Propõe que a saúde é responsabilidade exclusiva do indivíduo',c:false}],
+   ok:'Correto! A definição da OMS é o ponto de partida do modelo ampliado: saúde é bem-estar em todas as dimensões da vida.',
+   nok:'A OMS define saúde como bem-estar completo — físico, mental e social — que é a base do modelo ampliado.',
+   ref:'OMS (1948). Constituição da Organização Mundial da Saúde. Preâmbulo.'}]
+},
+
+{id:3,bloco:1,icon:'🌿',cor:'#fbbf24',
+title:'Promoção e Prevenção da Saúde',
+sub:'Criar condições para viver bem — não apenas evitar a doença',
+kws:['promoção de saúde','prevenção','Carta de Ottawa','Alma-Ata 1978','Lalonde','prevenção primária','secundária','terciária','vulnerabilidade','empoderamento','intersetorialidade'],
+mnem:'Prevenção = evitar a doença. Promoção = criar condições para viver melhor. Lembre: <strong>Ottawa (1986)</strong> = 5 estratégias de promoção. <strong>Alma-Ata (1978)</strong> = "saúde para todos até o ano 2000".',
+content:`<h4>Diferença fundamental: Prevenção vs. Promoção</h4>
+<div class="contrast">🛑 <strong>Prevenção:</strong> age sobre o risco de doença específica. "Não beba tanto." Exemplo: vacinação, triagem de hipertensão, orientação sobre tabagismo. Ainda opera dentro da lógica da doença.<br><br>🌱 <strong>Promoção:</strong> cria condições gerais para que as pessoas vivam melhor — independentemente de doenças específicas. "Por que José bebe? Que vida é possível construir com ele?" Opera na lógica da vida e do bem-estar.</div>
+<h4>Níveis de prevenção</h4>
+<ul>
+<li><strong>Prevenção primária:</strong> antes da doença aparecer. Vacinação, saneamento, educação em saúde;</li>
+<li><strong>Prevenção secundária:</strong> detecção precoce e tratamento. Rastreamento, diagnóstico, controle de fatores de risco;</li>
+<li><strong>Prevenção terciária:</strong> reabilitação e redução de sequelas. Fisioterapia, grupos de apoio, reinserção social.</li>
+</ul>
+<h4>Carta de Ottawa (1986)</h4>
+<p>Marco fundador da promoção da saúde. Estabelece <strong>5 estratégias</strong>:</p>
+<ol>
+<li>Elaboração e implementação de políticas públicas saudáveis;</li>
+<li>Criação de ambientes favoráveis à saúde;</li>
+<li>Reforço da ação comunitária;</li>
+<li>Desenvolvimento de habilidades pessoais;</li>
+<li>Reorientação dos serviços de saúde.</li>
+</ol>
+<h4>Conferência de Alma-Ata (1978)</h4>
+<p>Declaração internacional que estabelece a <strong>atenção primária</strong> como estratégia central para "saúde para todos até o ano 2000". Propõe que saúde é um direito humano fundamental e responsabilidade dos governos. Influência direta no SUS.</p>
+<div class="green-box">🌱 <strong>Promoção da saúde na ESF:</strong> grupos de convivência, atividades comunitárias, hortas comunitárias, grupos de caminhada, rodas de conversa, arte e cultura — tudo isso é promoção de saúde. O psicólogo tem papel central nessa dimensão.</div>
+<div class="note">📌 <strong>Para a prova:</strong> Prevenção age sobre o risco; promoção age sobre as condições de vida. Ottawa (1986) = 5 estratégias de promoção. Alma-Ata (1978) = atenção primária como centro do sistema.</div>`,
+ref:'OMS/OPS (1986). Carta de Ottawa para a Promoção da Saúde. | OMS (1978). Declaração de Alma-Ata. | Czeresnia, D. & Freitas, C.M. (2009). Promoção da saúde: conceitos, reflexões, tendências. Fiocruz.',
+mm:{center:'Promoção e Prevenção',bs:[
+  {l:'Prevenção',c:'#fbbf24',s:['Primária: antes da doença','Secundária: rastreamento','Terciária: reabilitação','Vacinação, triagem']},
+  {l:'Promoção (Ottawa 1986)',c:'#fb923c',s:['Políticas saudáveis','Ambientes favoráveis','Ação comunitária','Habilidades pessoais']},
+  {l:'Marcos históricos',c:'#22d3ee',s:['Alma-Ata 1978','Carta de Ottawa 1986','Lalonde 1974','Adelaide, Sundsval, Bangkok']},
+  {l:'Na ESF / Psicologia',c:'#84cc16',s:['Grupos de convivência','Arte e cultura','Rodas de conversa','Empoderamento comunit.']}]},
+conns:[
+  {tipo:'Integra',cor:'#fb923c',nome:'ESF',desc:'A ESF é o principal espaço de promoção e prevenção no SUS — opera antes da doença e nas condições de vida do território.'},
+  {tipo:'Fundamenta',cor:'#f97316',nome:'Modelo Ampliado',desc:'Promoção é a expressão mais completa do modelo ampliado: vai além de prevenir doenças, cria condições para viver melhor.'},
+  {tipo:'Articula com',cor:'#a78bfa',nome:'Determinantes Sociais',desc:'Promover saúde exige intersetorialidade: educação, moradia, saneamento, renda, cultura. Nenhum setor sozinho dá conta.'},
+  {tipo:'Presente em',cor:'#22d3ee',nome:'RAPS / CAPS',desc:'Redução de danos e prevenção de recaídas são formas de promoção e prevenção dentro da rede de saúde mental.'}],
+fQ:'Qual a diferença entre prevenção e promoção da saúde?',fA:'Prevenção age sobre risco de doença específica (vacinação, triagem). Promoção cria condições gerais para bem-estar (Ottawa 1986: 5 estratégias). Alma-Ata (1978) consolidou atenção primária como estratégia de "saúde para todos".',
+quizzes:[
+  {q:'A Carta de Ottawa (1986) define a promoção da saúde como:',
+   opts:[{t:'A eliminação de todos os fatores de risco para doenças crônicas',c:false},{t:'O processo que capacita as pessoas a aumentar o controle sobre sua saúde e melhorá-la',c:true},{t:'A vacinação universal como estratégia principal de prevenção',c:false},{t:'A restrição de comportamentos não saudáveis por políticas coercitivas',c:false}],
+   ok:'Correto! Ottawa define promoção como empoderamento — capacitar pessoas para ter controle sobre os determinantes da sua saúde.',
+   nok:'A Carta de Ottawa não foca em eliminar riscos específicos, mas em empoderar pessoas e comunidades para produzir saúde.',
+   ref:'OMS/OPS (1986). Carta de Ottawa para a Promoção da Saúde. Genebra: OMS.'},
+  {q:'Na ESF, "promoção da saúde" para um usuário com uso abusivo de álcool implica:',
+   opts:[{t:'Apenas orientar a abstinência e marcar retorno',c:false},{t:'Investigar causas, criar redes de apoio social, oferecer grupos de convivência e articular determinantes sociais',c:true},{t:'Encaminhar imediatamente para desintoxicação hospitalar',c:false},{t:'Prescrever medicação e aguardar evolução',c:false}],
+   ok:'Correto! Promoção vai além de tratar o sintoma: cria condições (sociais, emocionais, comunitárias) para que a pessoa viva melhor.',
+   nok:'Promoção é criar condições — não apenas tratar ou orientar. Envolve redes de apoio, grupos, determinantes sociais.',
+   ref:'Czeresnia, D. & Freitas, C.M. (2009). Promoção da saúde: conceitos, reflexões, tendências. Fiocruz.'}]
+},
+
+{id:4,bloco:1,icon:'🧠',cor:'#22d3ee',
+title:'Saúde Mental na Atenção Básica',
+sub:'Escuta qualificada, acolhimento e matriciamento na ESF',
+kws:['saúde mental ESF','matriciamento','apoio matricial','NASF','escuta qualificada','acolhimento','identificação precoce','sofrimento difuso','psicólogo na AB','CAPS referência'],
+mnem:'Saúde mental na AB = <strong>E-A-I-M</strong>: <strong>E</strong>scuta qualificada + <strong>A</strong>colhimento + <strong>I</strong>dentificação precoce + <strong>M</strong>atricialmente com psicólogo/CAPS.',
+content:`<h4>Por que saúde mental na Atenção Básica?</h4>
+<p>Estima-se que <strong>30–50% das queixas na atenção básica</strong> têm componente emocional ou psíquico relevante — mas frequentemente aparecem disfarçadas de sintomas físicos (somatização). A ESF é o primeiro ponto de contato, e por isso precisa estar preparada para identificar e cuidar do sofrimento mental.</p>
+<h4>Escuta Qualificada</h4>
+<p>Não é apenas ouvir as palavras — é <strong>dar espaço para que a pessoa fale</strong> e ser capaz de ouvir o que não foi dito explicitamente. Implica tempo, presença, ausência de julgamento e capacidade de tolerar o sofrimento do outro sem pressa de resolvê-lo.</p>
+<h4>Acolhimento</h4>
+<p>Receber o usuário <strong>sem julgamento</strong>, reconhecendo a singularidade de cada história. O acolhimento não é triagem — é uma postura ética de reconhecimento do outro como sujeito. Na prática da ESF, acolher significa abrir espaço para que o sofrimento seja nomeado.</p>
+<h4>Apoio Matricial (Matriciamento)</h4>
+<p>O <strong>apoio matricial</strong> é uma metodologia de trabalho em que especialistas (psicólogo, psiquiatra) apoiam as equipes de referência (ESF) sem necessariamente assumir os casos. O psicólogo do NASF:</p>
+<ul>
+<li>Discute casos com a equipe;</li>
+<li>Capacita os profissionais para manejo de situações de saúde mental;</li>
+<li>Realiza consultas conjuntas (interconsulta);</li>
+<li>Identifica quando encaminhar ao CAPS.</li>
+</ul>
+<div class="highlight">🧠 <strong>Sofrimento difuso:</strong> na atenção básica, muitos usuários apresentam sofrimento psíquico que não se enquadra em diagnósticos psiquiátricos formais. Angústia, tristeza, conflitos relacionais, insônia — são expressões do sofrimento da vida. A ESF é o lugar certo para esse cuidado.</div>
+<h4>Quando encaminhar ao CAPS?</h4>
+<p>O encaminhamento ao CAPS é indicado quando há: transtorno mental grave (esquizofrenia, transtorno bipolar grave, dependência química severa); sofrimento que supera a capacidade da AB; necessidade de acompanhamento intensivo.</p>
+<div class="note">📌 <strong>Para a prova:</strong> Matriciamento = psicólogo apoia a equipe, não substitui. Escuta qualificada ≠ consulta psicológica. Acolhimento = postura ética. Sofrimento difuso = campo de atuação da AB, não necessariamente do CAPS.</div>`,
+ref:'Brasil, MS (2013). Caderno de Atenção Básica n.34 — Saúde Mental. | Chiaverini, D.H. et al. (2011). Guia prático de matriciamento em saúde mental. Ministério da Saúde. | Lancetti, A. (2006). Clínica Peripatética.',
+mm:{center:'Saúde Mental na AB',bs:[
+  {l:'Práticas centrais',c:'#22d3ee',s:['Escuta qualificada','Acolhimento','Identificação precoce','Vínculo longitudinal']},
+  {l:'Matriciamento',c:'#fb923c',s:['Psicólogo no NASF','Discussão de casos','Interconsulta','Capacitação da equipe']},
+  {l:'Quando encaminhar',c:'#ef4444',s:['Transtorno mental grave','Sofrimento intenso','Dependência química','Risco para si/outros']},
+  {l:'Na ESF',c:'#84cc16',s:['Sofrimento difuso','Somatização','Conflitos familiares','Grupos terapêuticos']}]},
+conns:[
+  {tipo:'Porta de entrada',cor:'#fb923c',nome:'ESF',desc:'A ESF é o primeiro ponto de contato com o sofrimento mental. Identificação precoce na AB evita agravamento e internação.'},
+  {tipo:'Referência para',cor:'#22d3ee',nome:'CAPS',desc:'Quando o sofrimento supera a capacidade da AB, o CAPS é a referência especializada. A ESF faz a contrarreferência após melhora.'},
+  {tipo:'Método de trabalho',cor:'#fbbf24',nome:'Apoio Matricial',desc:'O matriciamento conecta a AB com a saúde mental especializada sem fragmentar o cuidado — o usuário permanece no território.'},
+  {tipo:'Conecta com',cor:'#a78bfa',nome:'RAPS',desc:'A saúde mental na AB é o ponto de partida da RAPS — Rede de Atenção Psicossocial que articula todos os serviços de saúde mental.'}],
+fQ:'O que é apoio matricial (matriciamento) na ESF?',fA:'Metodologia em que o psicólogo/especialista apoia a equipe de referência (ESF) sem assumir os casos. Inclui discussão de casos, interconsulta, capacitação da equipe. O usuário permanece na AB, com suporte especializado.',
+quizzes:[
+  {q:'O "apoio matricial" (matriciamento) na ESF caracteriza-se por:',
+   opts:[{t:'O psicólogo assume todos os casos de saúde mental da equipe',c:false},{t:'O especialista (psicólogo/psiquiatra) apoia a equipe de referência sem necessariamente assumir os casos individualmente',c:true},{t:'O encaminhamento automático de todos os casos de sofrimento ao CAPS',c:false},{t:'A substituição da equipe de saúde por profissionais de saúde mental',c:false}],
+   ok:'Correto! No matriciamento, o especialista apoia, capacita e realiza interconsultas — fortalecendo a capacidade da equipe, não substituindo-a.',
+   nok:'O matriciamento não retira o caso da equipe — ele fortalece a capacidade da ESF de cuidar do sofrimento mental.',
+   ref:'Brasil, MS (2011). Guia prático de matriciamento em saúde mental. Brasília: Ministério da Saúde.'},
+  {q:'Na Atenção Básica, "sofrimento difuso" refere-se a:',
+   opts:[{t:'Qualquer transtorno mental grave que exige encaminhamento ao CAPS',c:false},{t:'Sofrimento psíquico que não se enquadra em diagnósticos formais: angústia, conflitos, insônia, tristeza — campo prioritário da ESF',c:true},{t:'Exclusivamente casos de dependência química severa',c:false},{t:'Sintomas físicos sem causa orgânica que exigem internação',c:false}],
+   ok:'Correto! Sofrimento difuso é o campo mais frequente na AB — e é exatamente onde a ESF, com escuta qualificada e vínculo, pode fazer a diferença.',
+   nok:'Sofrimento difuso não é transtorno grave — é o sofrimento cotidiano da vida que precisa de acolhimento e escuta, não necessariamente de encaminhamento.',
+   ref:'Brasil, MS (2013). Caderno de Atenção Básica n.34 — Saúde Mental.'}]
+},
+
+{id:5,bloco:2,icon:'🌐',cor:'#a78bfa',
+title:'Redes de Atenção à Saúde (RAS)',
+sub:'Os serviços funcionam integrados — não como ilhas isoladas',
+kws:['RAS','referência','contrarreferência','linha de cuidado','integração','coordenação','fragmentação','Mendes','atenção primária coordenadora','integralidade','regulação'],
+mnem:'RAS = serviços <strong>integrados</strong>, não ilhas. Coração: <strong>referência</strong> (AB encaminha) + <strong>contrarreferência</strong> (especialista devolve). Sem contrarreferência → <strong>fragmentação</strong> do cuidado.',
+content:`<h4>O que são as Redes de Atenção à Saúde?</h4>
+<p>As <strong>Redes de Atenção à Saúde (RAS)</strong> são organizações poliárquicas de serviços de saúde interconectados para oferecer atenção contínua e integral, com responsabilização e criação de valor para a população. O conceito-chave é que os serviços <strong>não são ilhas isoladas</strong> — eles se comunicam e se complementam.</p>
+<h4>Níveis de Atenção</h4>
+<ul>
+<li><strong>Atenção Primária (AB/ESF):</strong> porta de entrada, base da pirâmide, foco em promoção e prevenção, longitudinalidade;</li>
+<li><strong>Atenção Especializada:</strong> média complexidade, ambulatórios, CAPS, diagnóstico aprofundado;</li>
+<li><strong>Atenção Hospitalar:</strong> alta complexidade, internação, curta permanência idealmente;</li>
+<li><strong>Urgência e Emergência (UPA/SAMU):</strong> estabilização de crises agudas.</li>
+</ul>
+<h4>Referência e Contrarreferência — O coração da integração</h4>
+<div class="highlight">📤 <strong>Referência:</strong> a AB encaminha o usuário para nível especializado com informações clínicas e contexto social.<br><br>📥 <strong>Contrarreferência:</strong> o especialista devolve o usuário para a AB com relatório, plano de cuidado e orientações para continuidade.<br><br>⚠️ <strong>Sem contrarreferência</strong>, o usuário se perde na rede, o cuidado se fragmenta e a AB perde a coordenação do caso.</div>
+<h4>A Atenção Primária como coordenadora</h4>
+<p>Nas RAS, a <strong>Atenção Primária é o centro coordenador</strong> (não apenas a porta de entrada). Ela conhece o histórico completo do usuário, coordena os encaminhamentos, recebe as contrarreferências e mantém a longitudinalidade — mesmo quando o usuário percorre vários serviços.</p>
+<h4>Fragmentação: o principal problema</h4>
+<p>A fragmentação ocorre quando os serviços não se comunicam, o usuário repete exames, ninguém conhece seu histórico completo e o cuidado se torna episódico. É o problema que as RAS buscam superar.</p>
+<div class="note">📌 <strong>Para a prova:</strong> RAS = integração ≠ fragmentação. Referência = AB encaminha. Contrarreferência = especialista devolve com plano. AB é coordenadora, não apenas porta de entrada.</div>`,
+ref:'Brasil, MS (2010). Portaria 4.279/2010 — Diretrizes para a organização das RAS no SUS. | Mendes, E.V. (2011). As redes de atenção à saúde. Brasília: OPAS. | Starfield, B. (2002). Atenção primária: equilíbrio entre necessidades de saúde, serviços e tecnologia.',
+mm:{center:'Redes de Atenção à Saúde',bs:[
+  {l:'Níveis de atenção',c:'#a78bfa',s:['Primária (AB/ESF)','Especializada (CAPS/AMB)','Hospitalar','Urgência (UPA/SAMU)']},
+  {l:'Integração',c:'#fb923c',s:['Referência (AB→Espec.)','Contrarreferência (volta)','Regulação','Linha de cuidado']},
+  {l:'AB como coordenadora',c:'#22d3ee',s:['Conhece o histórico','Coordena encaminham.','Recebe contrarreferência','Mantém longitudinalidade']},
+  {l:'Problema central',c:'#ef4444',s:['Fragmentação','Exames repetidos','Sem comunicação','Cuidado episódico']}]},
+conns:[
+  {tipo:'Organiza',cor:'#fb923c',nome:'ESF / Atenção Básica',desc:'A ESF é a base e coordenadora das RAS — não apenas a porta de entrada, mas o eixo de coordenação do cuidado longitudinal.'},
+  {tipo:'Inclui',cor:'#22d3ee',nome:'RAPS',desc:'A Rede de Atenção Psicossocial (RAPS) é uma das redes temáticas dentro das RAS — organiza especificamente o cuidado em saúde mental.'},
+  {tipo:'Inclui',cor:'#ef4444',nome:'RUE',desc:'A Rede de Urgência e Emergência (RUE) é outra rede temática: SAMU, UPA, leitos de retaguarda — estabiliza e encaminha de volta à rede.'},
+  {tipo:'Resolve',cor:'#84cc16',nome:'Fragmentação do Cuidado',desc:'A principal função das RAS é superar a fragmentação: serviços integrados, com referência e contrarreferência funcionando.'}],
+fQ:'O que são RAS e qual o conceito de referência/contrarreferência?',fA:'Redes de serviços integrados para atenção contínua. Referência = AB encaminha com dados clínicos. Contrarreferência = especialista devolve com plano de cuidado. Sem contrarreferência o cuidado se fragmenta.',
+quizzes:[
+  {q:'O que significa "contrarreferência" nas Redes de Atenção à Saúde?',
+   opts:[{t:'O encaminhamento da Atenção Básica para a especialidade',c:false},{t:'O retorno do serviço especializado para a AB, com relatório e plano de cuidado para continuidade',c:true},{t:'A recusa de um serviço em atender um usuário encaminhado',c:false},{t:'A transferência entre hospitais de diferentes níveis de complexidade',c:false}],
+   ok:'Correto! A contrarreferência fecha o ciclo: o especialista devolve o usuário para a AB com informações para que o cuidado continue no território.',
+   nok:'Contrarreferência é o retorno — não o encaminhamento. Sem ela, o usuário se perde na rede e a AB perde a coordenação.',
+   ref:'Brasil, MS (2010). Portaria 4.279/2010 — Diretrizes para organização das RAS.'},
+  {q:'Na organização das RAS, a Atenção Primária (AB/ESF) tem papel de:',
+   opts:[{t:'Atender apenas casos simples e encaminhar todo o resto',c:false},{t:'Coordenadora do cuidado: conhece o histórico, coordena encaminhamentos e mantém a longitudinalidade do usuário',c:true},{t:'Serviço de urgência para casos que não requerem hospitalização',c:false},{t:'Reguladora dos leitos hospitalares da rede',c:false}],
+   ok:'Correto! A AB é o centro coordenador das RAS — mantém o histórico completo, coordena fluxos e garante continuidade.',
+   nok:'A AB não é apenas porta de entrada — ela coordena todo o percurso do usuário na rede.',
+   ref:'Mendes, E.V. (2011). As redes de atenção à saúde. Brasília: OPAS, cap. 3.'}]
+},
+
+{id:6,bloco:2,icon:'🧩',cor:'#84cc16',
+title:'RAPS — Rede de Atenção Psicossocial',
+sub:'Organização do cuidado em saúde mental no SUS',
+kws:['RAPS','CAPS','SRT','CECO','UBS','ESF','leito de saúde mental','redução de danos','desinstitucionalização','Reforma Psiquiátrica','Lei 10.216/2001','CAPS I II III AD Infantil'],
+mnem:'RAPS = <strong>A</strong>B base + <strong>C</strong>APS referência + <strong>S</strong>RT moradia + <strong>C</strong>ECO convivência. CAPS: <strong>I</strong> (pequeno) + <strong>II</strong> (médio) + <strong>III</strong> (24h) + <strong>AD</strong> (álcool/drogas) + <strong>i</strong> (infantil).',
+content:`<h4>O que é a RAPS?</h4>
+<p>A <strong>Rede de Atenção Psicossocial (RAPS)</strong>, instituída pela Portaria 3.088/2011, organiza os pontos de atenção para pessoas com sofrimento ou transtorno mental e com necessidades decorrentes do uso de álcool e outras drogas. É a operacionalização da <strong>Reforma Psiquiátrica</strong> na rede de saúde.</p>
+<h4>Componentes da RAPS</h4>
+<ul>
+<li><strong>APS (UBS e ESF):</strong> base da RAPS, porta de entrada, acompanhamento longitudinal, apoio matricial;</li>
+<li><strong>CAPS (Centros de Atenção Psicossocial):</strong> serviço especializado em saúde mental, referência da RAPS;</li>
+<li><strong>Serviços Residenciais Terapêuticos (SRT):</strong> moradia para pessoas com transtorno mental grave que perderam o vínculo familiar após longa institucionalização;</li>
+<li><strong>Centros de Convivência e Cultura (CECO):</strong> espaços de socialização, arte, cultura e produção — enfrentam o isolamento e constroem cidadania;</li>
+<li><strong>Leitos de saúde mental em hospital geral:</strong> internação breve e integrada (saúde mental não é mais tratada em manicômio isolado).</li>
+</ul>
+<h4>Os tipos de CAPS</h4>
+<ul>
+<li><strong>CAPS I:</strong> municípios de 20.000–70.000 hab. Funciona em horário comercial;</li>
+<li><strong>CAPS II:</strong> municípios acima de 70.000 hab. Maior capacidade. Horário expandido;</li>
+<li><strong>CAPS III:</strong> acima de 200.000 hab. Funciona 24h, 7 dias/semana. Tem leitos para acolhimento noturno;</li>
+<li><strong>CAPS AD:</strong> álcool e drogas. Foco em dependência química e redução de danos;</li>
+<li><strong>CAPS i:</strong> infantojuvenil. Para crianças e adolescentes com transtorno mental grave ou uso de álcool/drogas.</li>
+</ul>
+<h4>Princípios da RAPS</h4>
+<div class="green-box">✅ <strong>Desinstitucionalização:</strong> cuidar no território, não no manicômio.<br>✅ <strong>Redução de danos:</strong> estratégias que reduzem riscos sem exigir abstinência imediata.<br>✅ <strong>Clínica ampliada:</strong> projeto terapêutico singular para cada usuário.<br>✅ <strong>Protagonismo do usuário:</strong> o usuário participa do próprio projeto de cuidado.</div>
+<div class="note">📌 <strong>Para a prova:</strong> Lei 10.216/2001 = Reforma Psiquiátrica Brasileira (Lei Paulo Delgado) — direitos das pessoas com transtorno mental. CAPS III = 24h com leitos. Internação = último recurso. RAPS = cuidado no território, não no hospital.</div>`,
+ref:'Brasil, MS (2011). Portaria 3.088/2011 — Institui a RAPS. | Brasil (2001). Lei 10.216/2001 — Reforma Psiquiátrica. | Amarante, P. (2007). Saúde mental e atenção psicossocial. Fiocruz. | Tenório, F. (2002). A reforma psiquiátrica brasileira. História, Ciências, Saúde-Manguinhos.',
+mm:{center:'RAPS',bs:[
+  {l:'Componentes principais',c:'#84cc16',s:['APS: UBS e ESF','CAPS (I,II,III,AD,i)','SRT (moradia)','CECO (convivência)']},
+  {l:'CAPS por tipo',c:'#fb923c',s:['CAPS I: <70k hab','CAPS II: >70k hab','CAPS III: 24h leitos','CAPS AD: álcool/drogas']},
+  {l:'Princípios',c:'#22d3ee',s:['Desinstitucionalização','Redução de danos','Clínica ampliada','Protagonismo do usuário']},
+  {l:'Base legal',c:'#a78bfa',s:['Lei 10.216/2001','Portaria 3.088/2011','Reforma Psiquiátrica','Antimanicomio']}]},
+conns:[
+  {tipo:'Componente das',cor:'#a78bfa',nome:'RAS',desc:'A RAPS é uma rede temática dentro das RAS — focada especificamente no cuidado em saúde mental e uso de álcool/drogas.'},
+  {tipo:'Fundamenta-se em',cor:'#84cc16',nome:'Reforma Psiquiátrica',desc:'A RAPS é a expressão institucional da Reforma Psiquiátrica — substitui o modelo manicomial por cuidado no território.'},
+  {tipo:'Articula com',cor:'#22d3ee',nome:'ESF / Saúde Mental na AB',desc:'A ESF é a base da RAPS: identifica, acolhe, acompanha e encaminha. O CAPS complementa — não substitui — a AB.'},
+  {tipo:'Inclui',cor:'#ef4444',nome:'Componente Urgência',desc:'Crises em saúde mental passam pela UPA/SAMU (RUE) e podem ser acolhidas no CAPS III ou em leitos em hospital geral.'}],
+fQ:'Quais são os principais componentes da RAPS e os tipos de CAPS?',fA:'APS (base), CAPS (especializado), SRT (moradia), CECO (convivência), leitos em hospital geral. CAPS: I (<70k hab), II (>70k), III (24h/leitos), AD (álcool/drogas), i (infantojuvenil). Base legal: Lei 10.216/2001 + Portaria 3.088/2011.',
+quizzes:[
+  {q:'A RAPS (Rede de Atenção Psicossocial) foi criada pela Portaria 3.088/2011 com base na Reforma Psiquiátrica. Qual é seu princípio central?',
+   opts:[{t:'Centralizar o cuidado em hospitais psiquiátricos de grande porte',c:false},{t:'Organizar o cuidado em saúde mental no território, substituindo o modelo manicomial por serviços comunitários',c:true},{t:'Restringir o acesso aos medicamentos psiquiátricos de alto custo',c:false},{t:'Transferir a responsabilidade do cuidado mental para as famílias',c:false}],
+   ok:'Correto! A RAPS operacionaliza a Reforma Psiquiátrica: cuidado no território, desinstitucionalização, protagonismo do usuário.',
+   nok:'A RAPS é o oposto da centralização hospitalar — é rede territorial que substitui o manicômio.',
+   ref:'Brasil, MS (2011). Portaria 3.088/2011. | Lei 10.216/2001.'},
+  {q:'O CAPS III diferencia-se dos demais tipos de CAPS principalmente por:',
+   opts:[{t:'Ser destinado exclusivamente ao tratamento de dependência química',c:false},{t:'Funcionar 24 horas por dia, 7 dias por semana, com leitos de acolhimento noturno',c:true},{t:'Atender exclusivamente crianças e adolescentes',c:false},{t:'Ser vinculado ao hospital psiquiátrico para internação compulsória',c:false}],
+   ok:'Correto! O CAPS III funciona 24h com leitos de acolhimento — permite crises em saúde mental serem tratadas no território, sem hospitalização.',
+   nok:'CAPS III = 24h + leitos. CAPS AD = álcool/drogas. CAPS i = infantojuvenil.',
+   ref:'Brasil, MS (2011). Portaria 3.088/2011, art. sobre tipos de CAPS.'}]
+},
+
+{id:7,bloco:2,icon:'🚑',cor:'#ef4444',
+title:'Urgência, Emergência e RUE',
+sub:'Estabilizar e encaminhar — não tratar cronicamente',
+kws:['RUE','SAMU','UPA','PS','urgência','emergência','crise','leitos de retaguarda','acolhimento com classificação de risco','saúde mental urgência','estabilização'],
+mnem:'RUE = <strong>SAMU</strong> (mobile) + <strong>UPA</strong> (porta) + <strong>leitos</strong> (retaguarda). Função: <strong>estabilizar</strong> e encaminhar — NÃO fazer acompanhamento contínuo. Em saúde mental: crise ≠ internação.',
+content:`<h4>Rede de Urgência e Emergência (RUE)</h4>
+<p>A <strong>Rede de Urgência e Emergência (RUE)</strong>, instituída pela Portaria 1.600/2011, organiza os serviços de urgência e emergência do SUS para garantir atenção contínua e referenciada em situações de risco imediato à vida.</p>
+<h4>Componentes da RUE</h4>
+<ul>
+<li><strong>SAMU 192 (Serviço de Atendimento Móvel de Urgência):</strong> atendimento pré-hospitalar móvel. Aciona pelo 192. Estabiliza no local e transporta para o serviço adequado. Equipe: médico regulador, enfermeiro, técnico de enfermagem, socorristas;</li>
+<li><strong>UPA 24h (Unidade de Pronto Atendimento):</strong> porta de entrada de urgências de média complexidade. Funciona 24h. Realiza acolhimento com classificação de risco (Protocolo de Manchester ou similar). Evita superlotação dos hospitais;</li>
+<li><strong>Leitos de retaguarda:</strong> hospitais com leitos para casos que precisam de internação após estabilização na UPA.</li>
+</ul>
+<h4>Urgência vs. Emergência</h4>
+<div class="contrast">🔴 <strong>Emergência:</strong> risco imediato de morte. Atendimento imediato obrigatório. Exemplos: IAM, AVC, parada cardiorrespiratória, trauma grave.<br><br>🟡 <strong>Urgência:</strong> situação que pode agravar-se sem atendimento oportuno, mas não há risco imediato de morte. Pode aguardar uma classificação de risco.</div>
+<h4>Saúde mental na urgência e emergência</h4>
+<p>Crises em saúde mental (agitação psicomotora, tentativas de suicídio, surtos psicóticos agudos) chegam pela RUE. O papel do psicólogo:</p>
+<ul>
+<li><strong>Intervenção em crise:</strong> técnica breve de estabilização emocional, sem foco em psicoterapia;</li>
+<li><strong>Avaliação de risco:</strong> identificar risco de suicídio, violência ou autolesão;</li>
+<li><strong>Articulação com a rede:</strong> após estabilização, encaminhar para o serviço adequado (CAPS III, leito em hospital geral, ESF);</li>
+<li><strong>Humanização:</strong> presença empática em momento de crise reduz agitação e melhora adesão ao cuidado subsequente.</li>
+</ul>
+<div class="note">📌 <strong>Para a prova:</strong> SAMU = pré-hospitalar móvel. UPA = urgência 24h de média complexidade. RUE ≠ RAPS. Em saúde mental: urgência e emergência estabilizam e encaminham — o tratamento contínuo é na rede (CAPS, ESF).</div>`,
+ref:'Brasil, MS (2011). Portaria 1.600/2011 — Reformula a Política Nacional de Atenção às Urgências. | Brasil, MS (2013). Manual instrutivo da Rede de Atenção às Urgências no SUS. | CFM/CFP (2019). Resolução conjunta sobre atendimento em urgência e emergência.',
+mm:{center:'Urgência e Emergência',bs:[
+  {l:'Componentes da RUE',c:'#ef4444',s:['SAMU 192 (pré-hosp.)','UPA 24h (porta)','PS / Hospital','Leitos de retaguarda']},
+  {l:'Urgência vs Emergência',c:'#fb923c',s:['Emergência: risco imediato','Urgência: risco potencial','Classificação de risco','Protocolo Manchester']},
+  {l:'Saúde mental na crise',c:'#a78bfa',s:['Intervenção em crise','Avaliação de risco','Articulação com CAPS','Humanização']},
+  {l:'Fluxo após crise',c:'#22d3ee',s:['Estabilização','Encaminhamento CAPS III','Leito hosp. geral','Retorno à AB/ESF']}]},
+conns:[
+  {tipo:'Componente das',cor:'#a78bfa',nome:'RAS',desc:'A RUE é uma rede temática dentro das RAS — focada em situações de risco imediato, complementar às redes crônicas.'},
+  {tipo:'Articula com',cor:'#84cc16',nome:'RAPS',desc:'Crises em saúde mental chegam pela RUE (UPA/SAMU) e são encaminhadas ao CAPS III ou leitos de hospital geral. A RAPS recebe após estabilização.'},
+  {tipo:'Encaminha para',cor:'#fb923c',nome:'ESF / AB',desc:'Após estabilização na RUE, o usuário retorna à AB para continuidade do cuidado. Sem essa contrarreferência, o cuidado se fragmenta.'},
+  {tipo:'Diferencia-se de',cor:'#22d3ee',nome:'Atenção Especializada (CAPS)',desc:'CAPS = acompanhamento contínuo. UPA/SAMU = estabilização de crise. São funções complementares na rede.'}],
+fQ:'Quais são os componentes da RUE e o papel do psicólogo em urgência/emergência?',fA:'SAMU (pré-hospitalar móvel), UPA 24h (urgência média complexidade), leitos de retaguarda. Psicólogo: intervenção em crise, avaliação de risco, articulação com CAPS/ESF após estabilização.',
+quizzes:[
+  {q:'O SAMU 192 caracteriza-se por:',
+   opts:[{t:'Ser uma unidade de internação psiquiátrica de curta duração',c:false},{t:'Realizar atendimento pré-hospitalar móvel, estabilizando o usuário no local e transportando ao serviço adequado',c:true},{t:'Funcionar como ambulatório especializado em urgências de média complexidade',c:false},{t:'Ser a porta de entrada exclusiva para urgências de saúde mental',c:false}],
+   ok:'Correto! O SAMU é o componente móvel pré-hospitalar: vai ao local da ocorrência, estabiliza e encaminha ao serviço adequado.',
+   nok:'SAMU = móvel, pré-hospitalar. UPA = fixo, porta de urgência. Hospital = internação.',
+   ref:'Brasil, MS (2011). Portaria 1.600/2011 — Política Nacional de Atenção às Urgências.'},
+  {q:'O papel do psicólogo em urgência e emergência, em casos de crise de saúde mental, é:',
+   opts:[{t:'Iniciar psicoterapia de longa duração para resolver a crise',c:false},{t:'Realizar intervenção breve em crise, avaliar risco e articular encaminhamento para serviço adequado após estabilização',c:true},{t:'Prescrever medicação de contenção química',c:false},{t:'Determinar internação compulsória sem avaliação de risco',c:false}],
+   ok:'Correto! Na urgência, o psicólogo faz intervenção em crise (não psicoterapia), avalia risco e articula com a rede (CAPS, ESF) após estabilização.',
+   nok:'O psicólogo não prescreve medicação nem decide isoladamente sobre internação. Sua função é a intervenção em crise e a articulação com a rede.',
+   ref:'CFP (2019). Resolução sobre atuação em urgência e emergência.'}]
+},
+
+{id:8,bloco:2,icon:'🤝',cor:'#f97316',
+title:'O Papel do Psicólogo na Rede SUS',
+sub:'Articulador do cuidado — muito além do consultório',
+kws:['psicólogo SUS','clínica ampliada','projeto terapêutico singular','PTS','articulador do cuidado','saúde coletiva','psicólogo na AB','psicólogo CAPS','humanização','PNHAH','integralidade','intersetorialidade'],
+mnem:'Psicólogo no SUS = <strong>A</strong>rticulador + <strong>C</strong>línica ampliada + <strong>P</strong>TS. Não apenas terapeuta individual. Atuação: <strong>AB</strong> (promoção/matriciamento) + <strong>CAPS</strong> (intensivo) + <strong>Hospital</strong> (humanização) + <strong>Urgência</strong> (crise).',
+content:`<h4>O Psicólogo como Articulador do Cuidado</h4>
+<p>No SUS, o psicólogo não é apenas um terapeuta que aplica psicoterapia individual. Ele é um <strong>articulador do cuidado</strong> — profissional que conecta serviços, apoia equipes, constrói projetos terapêuticos singulares e atua nas interfaces entre saúde, educação, assistência social e outros setores.</p>
+<h4>Atuação por nível</h4>
+<ul>
+<li><strong>Atenção Básica (ESF/NASF):</strong> escuta qualificada, grupos terapêuticos e comunitários, apoio matricial às equipes de saúde, identificação precoce de sofrimento mental, ações de promoção de saúde;</li>
+<li><strong>CAPS:</strong> psicoterapia individual e grupal, manejo de crise psicossocial, coordenação de projetos terapêuticos singulares (PTS), oficinas terapêuticas, construção de projetos de vida com os usuários;</li>
+<li><strong>Urgência e Emergência:</strong> intervenção breve em crise, avaliação de risco de suicídio, suporte emocional a familiares, humanização do atendimento;</li>
+<li><strong>Hospital:</strong> apoio emocional em internações, humanização do cuidado, trabalho com famílias, preparação para alta, suporte a equipes em situações de sofrimento.</li>
+</ul>
+<h4>Projeto Terapêutico Singular (PTS)</h4>
+<p>O PTS é uma ferramenta de clínica ampliada: um conjunto de propostas de condutas terapêuticas articuladas para um <strong>sujeito individual ou coletivo</strong>, construído coletivamente pela equipe e com o próprio usuário. Tem 4 momentos: diagnóstico (avaliação), definição de metas (curtas, médias, longas), divisão de responsabilidades, reavaliação.</p>
+<h4>Humanização (PNHAH)</h4>
+<p>A <strong>Política Nacional de Humanização (HumanizaSUS, 2003)</strong> propõe a humanização como eixo transversal do SUS: garantir atenção integral, com respeito à singularidade e à dignidade dos usuários. O psicólogo é agente central nesse processo.</p>
+<div class="note">📌 <strong>Para a prova:</strong> "O psicólogo é articulador do cuidado, não apenas terapeuta" — frase central da disciplina. PTS = projeto construído com o usuário, não para o usuário. HumanizaSUS (2003) = humanização como política transversal.</div>`,
+ref:'Brasil, MS (2003). HumanizaSUS — Política Nacional de Humanização. | CFP (2013). Referências técnicas para atuação de psicólogas/os em políticas públicas de saúde. | Campos, G.W.S. (2007). Clínica e saúde coletiva compartilhadas. In: Tratado de saúde coletiva. Fiocruz.',
+mm:{center:'Psicólogo no SUS',bs:[
+  {l:'Atenção Básica (NASF)',c:'#f97316',s:['Escuta qualificada','Grupos terapêuticos','Apoio matricial','Promoção de saúde']},
+  {l:'CAPS',c:'#a78bfa',s:['Psicoterapia individual/grupo','Manejo de crise','PTS (proj. ter. singular)','Oficinas terapêuticas']},
+  {l:'Urgência/Hospital',c:'#ef4444',s:['Intervenção em crise','Avaliação de risco','Humanização','Suporte a familiares']},
+  {l:'Papel transversal',c:'#84cc16',s:['Articulador do cuidado','Clínica ampliada','Intersetorialidade','HumanizaSUS (2003)']}]},
+conns:[
+  {tipo:'Atua em',cor:'#fb923c',nome:'ESF / Atenção Básica',desc:'Na AB, o psicólogo atua via NASF com matriciamento, grupos e promoção de saúde — não necessariamente atendimento individual.'},
+  {tipo:'Referência em',cor:'#84cc16',nome:'RAPS / CAPS',desc:'No CAPS, o psicólogo conduz PTS, grupos, oficinas e manejo de crise — função terapêutica especializada na rede de saúde mental.'},
+  {tipo:'Presente em',cor:'#ef4444',nome:'Urgência e Emergência',desc:'Na RUE, o psicólogo faz intervenção em crise, avaliação de risco e articula encaminhamento — não psicoterapia.'},
+  {tipo:'Orienta-se por',cor:'#22d3ee',nome:'HumanizaSUS / Clínica Ampliada',desc:'O PTS e a humanização são as ferramentas centrais do psicólogo no SUS — cuidado singular, integral e construído com o usuário.'}],
+fQ:'Qual o papel do psicólogo no SUS além da psicoterapia?',fA:'Articulador do cuidado: atua na AB com matriciamento e grupos (NASF), no CAPS com PTS e oficinas, na urgência com intervenção em crise, no hospital com humanização. HumanizaSUS (2003) = política transversal. PTS = projeto construído com o usuário.',
+quizzes:[
+  {q:'O Projeto Terapêutico Singular (PTS) no SUS caracteriza-se por:',
+   opts:[{t:'Ser um protocolo padronizado aplicado a todos os casos de saúde mental',c:false},{t:'Conjunto de propostas terapêuticas construído coletivamente pela equipe e com o próprio usuário, considerando sua singularidade',c:true},{t:'Plano de tratamento elaborado exclusivamente pelo médico psiquiatra',c:false},{t:'Roteiro de encaminhamentos para especialidades diferentes',c:false}],
+   ok:'Correto! O PTS é construído coletivamente — pela equipe E com o usuário. É ferramenta central da clínica ampliada no SUS.',
+   nok:'PTS não é protocolo padronizado nem elaborado apenas pelo médico. É singular: construído com e para cada sujeito.',
+   ref:'Brasil, MS (2007). Clínica ampliada e compartilhada. Brasília: Ministério da Saúde.'},
+  {q:'A atuação do psicólogo via NASF na Atenção Básica caracteriza-se principalmente por:',
+   opts:[{t:'Realizar psicoterapia individual para todos os usuários com sofrimento emocional',c:false},{t:'Oferecer apoio matricial às equipes de saúde, fortalecendo a capacidade da ESF de cuidar do sofrimento mental',c:true},{t:'Substituir o médico de família nas consultas de saúde mental',c:false},{t:'Limitar-se ao atendimento em consultório dentro da UBS',c:false}],
+   ok:'Correto! Via NASF, o psicólogo matricia a equipe: discute casos, faz interconsulta, capacita profissionais e faz grupos — não atende individualmente todos os casos.',
+   nok:'O NASF não é consultório dentro da UBS. O psicólogo matricia a equipe, que então cuida dos usuários — com apoio especializado.',
+   ref:'Brasil, MS (2009). Caderno de Atenção Básica n.27 — NASF.'}]
+}
+];
+
+const ALL_QUIZ=[];
+T.forEach(t=>t.quizzes.forEach(q=>ALL_QUIZ.push({...q,tid:t.id,ttitle:t.title,tcor:t.cor,ticon:t.icon})));
+
+const TL=[
+  {ano:'1948',tema:'Base conceitual',cor:'#fb923c',title:'OMS: Definição de Saúde',body:'A <strong>Organização Mundial da Saúde</strong> define saúde como "estado de completo bem-estar físico, mental e social — não apenas ausência de doença". Ponto de partida conceitual do modelo ampliado. Influência direta no SUS e na Política Nacional de Atenção Básica.'},
+  {ano:'1974',tema:'Determinação social',cor:'#f97316',title:'Relatório Lalonde — Canadá',body:'Marc Lalonde identifica <strong>4 campos determinantes da saúde</strong>: biologia humana, ambiente, estilos de vida e organização dos serviços. Demonstra que os serviços de saúde respondem por apenas 10–20% do estado de saúde da população. Fundamenta a promoção de saúde como estratégia central.'},
+  {ano:'1978',tema:'Atenção Primária',cor:'#fbbf24',title:'Conferência de Alma-Ata',body:'Declaração internacional que propõe a <strong>atenção primária</strong> como estratégia central para "saúde para todos até o ano 2000". Saúde como direito humano e responsabilidade dos governos. Influência direta na criação do SUS e na ESF brasileira.'},
+  {ano:'1986',tema:'Promoção de saúde',cor:'#84cc16',title:'1ª Conferência Internacional de Promoção da Saúde — Ottawa',body:'A <strong>Carta de Ottawa</strong> estabelece as 5 estratégias de promoção da saúde: políticas saudáveis, ambientes favoráveis, reforço comunitário, habilidades pessoais e reorientação dos serviços. Também é o ano da <strong>8ª Conferência Nacional de Saúde</strong> no Brasil — que fundamenta o SUS na Constituição.'},
+  {ano:'1988',tema:'SUS',cor:'#f97316',title:'Constituição Federal — SUS criado',body:'A Constituição Federal de 1988 cria o <strong>Sistema Único de Saúde (SUS)</strong> nos artigos 196–200: saúde como direito de todos e dever do Estado. Princípios: <strong>universalidade</strong>, <strong>integralidade</strong> e <strong>equidade</strong>. Diretrizes: descentralização, hierarquização e participação popular.'},
+  {ano:'1990',tema:'SUS',cor:'#fb923c',title:'Lei 8.080/1990 e Lei 8.142/1990 — Leis Orgânicas da Saúde',body:'A <strong>Lei 8.080/1990</strong> regulamenta o SUS: competências, atribuições, modelo de gestão e financiamento. A <strong>Lei 8.142/1990</strong> garante a participação da comunidade e as conferências e conselhos de saúde. Juntas formam a base legal do SUS.'},
+  {ano:'1991',tema:'ACS',cor:'#fbbf24',title:'Criação do Programa de Agentes Comunitários de Saúde (PACS)',body:'O <strong>PACS</strong> (1991) inaugura a estratégia de agentes de saúde com base comunitária no Brasil. Os <strong>Agentes Comunitários de Saúde (ACS)</strong> tornam-se o elo entre comunidade e serviço — antecipando a ESF.'},
+  {ano:'1994',tema:'ESF',cor:'#f97316',title:'Criação do Programa Saúde da Família (PSF)',body:'O <strong>PSF</strong> (1994), depois renomeado <strong>Estratégia Saúde da Família (ESF)</strong>, reorganiza a atenção básica em torno de equipes territorializadas com vínculo e continuidade. Rompe com o modelo de UBS como ambulatório de triagem.'},
+  {ano:'2001',tema:'Saúde Mental',cor:'#a78bfa',title:'Lei 10.216/2001 — Reforma Psiquiátrica Brasileira',body:'A <strong>Lei Paulo Delgado</strong> (Lei 10.216/2001) redireciona o modelo de assistência em saúde mental: substitui o manicômio por serviços comunitários. Garante direitos das pessoas com transtorno mental. Base legal da RAPS e dos CAPS.'},
+  {ano:'2003',tema:'Humanização',cor:'#22d3ee',title:'HumanizaSUS — Política Nacional de Humanização',body:'O <strong>HumanizaSUS</strong> propõe a humanização como eixo transversal do SUS: garantir atenção integral com respeito à dignidade dos usuários. Ferramentas: acolhimento, clínica ampliada, PTS, gestão participativa. O psicólogo é agente central nessa política.'},
+  {ano:'2006',tema:'Saúde Mental',cor:'#a78bfa',title:'Portaria 399/2006 — Pacto pela Saúde',body:'O <strong>Pacto pela Saúde</strong> (2006) reorganiza as responsabilidades federativas no SUS. No campo da saúde mental, consolida a rede de CAPS e define pactos de gestão entre municípios, estados e União para ampliação da RAPS.'},
+  {ano:'2010',tema:'RAS',cor:'#84cc16',title:'Portaria 4.279/2010 — Redes de Atenção à Saúde',body:'Estabelece as <strong>diretrizes para organização das RAS</strong> no SUS: integração dos níveis de atenção, coordenação pela AB, referência e contrarreferência. Formaliza o modelo de redes para superar a fragmentação dos serviços.'},
+  {ano:'2011',tema:'RAPS',cor:'#a78bfa',title:'Portaria 3.088/2011 — Rede de Atenção Psicossocial',body:'Institui a <strong>RAPS</strong>: organiza os pontos de atenção para saúde mental e uso de álcool/drogas. Define componentes: APS, CAPS (I, II, III, AD, i), SRT, CECO, UA, leitos em hospital geral. Operacionalização definitiva da Reforma Psiquiátrica.'},
+  {ano:'2011',tema:'RUE',cor:'#ef4444',title:'Portaria 1.600/2011 — Rede de Urgência e Emergência',body:'Reformula a <strong>Política Nacional de Atenção às Urgências</strong> e institui a RUE: SAMU, UPA 24h e leitos de retaguarda. Integra urgência à rede como componente articulado — não como estrutura isolada.'},
+  {ano:'2017',tema:'PNAB',cor:'#fb923c',title:'PNAB Revisada — Portaria 2.436/2017',body:'A <strong>Política Nacional de Atenção Básica</strong> revisada atualiza diretrizes da ESF, define composição das equipes, critérios de financiamento e papel do NASF. Mantém a territorialização e a longitudinalidade como pilares, mas flexibiliza alguns critérios de cobertura.'}
+];
+
+const CMP_BM=[
+  ['Dimensão','Modelo Biomédico','Modelo Ampliado de Saúde'],
+  ['Objeto','Doença — órgão afetado','Pessoa em seu contexto de vida'],
+  ['Foco da intervenção','Sintoma e tratamento','Determinantes sociais e condições de vida'],
+  ['Papel do profissional','Ativo, central, decisor','Facilitador — constrói com o usuário'],
+  ['Papel do usuário','Passivo — "paciente"','Sujeito ativo, co-responsável'],
+  ['Intervenção principal','Farmacológica / cirúrgica','Biopsicossocial, integral, multiprofissional'],
+  ['Temporalidade','Pontual — episódica','Longitudinal — continuidade'],
+  ['Localização','Consultório, hospital','Território, comunidade, ESF'],
+  ['Resultado esperado','Cura da doença','Produção de saúde e bem-estar']
+];
+
+const CMP_NIVEIS=[
+  ['Nível','Serviços principais','Complexidade','Psicólogo atua como','Exemplo'],
+  ['Atenção Primária','UBS, ESF, NASF','Baixa','Matriciador, grupos, promoção','Acompanhamento de depressão leve na ESF'],
+  ['Atenção Especializada','CAPS, AMB, policlínicas','Média','Terapeuta, PTS, oficinas','Acompanhamento no CAPS II de esquizofrenia'],
+  ['Atenção Hospitalar','Hospitais gerais, leitos psiq.','Alta','Humanização, suporte emocional','Psicólogo em internação de crise grave'],
+  ['Urgência e Emergência','SAMU, UPA 24h','Variável','Intervenção em crise, avaliação de risco','Tentativa de suicídio na UPA']
+];
+
+const CMP_CAPS=[
+  ['Tipo','Município (hab)','Funcionamento','Público-alvo principal'],
+  ['CAPS I','20.000–70.000','Horário comercial (5 dias)','Transtornos mentais graves adultos'],
+  ['CAPS II','acima de 70.000','Horário expandido (5 dias)','Transtornos mentais graves adultos'],
+  ['CAPS III','acima de 200.000','24 horas, 7 dias/semana + leitos','Transtornos graves + acolhimento noturno'],
+  ['CAPS AD','acima de 70.000','Horário expandido ou 24h','Álcool e outras drogas'],
+  ['CAPS i','acima de 70.000','Horário expandido','Crianças e adolescentes']
+];
+
+const GCONN=[
+  {de:'ESF',para:'RAPS/CAPS',tipo:'referência',desc:'A ESF identifica sofrimento mental e encaminha ao CAPS; o CAPS faz contrarreferência e apoia a ESF com matriciamento.'},
+  {de:'Modelo Ampliado',para:'ESF',tipo:'fundamenta',desc:'A ESF só faz sentido dentro do modelo ampliado — sem ele, seria apenas mais uma UBS de triagem médica.'},
+  {de:'Promoção de Saúde',para:'Determinantes Sociais',tipo:'articula',desc:'Promover saúde exige intersetorialidade: educação, moradia, saneamento, cultura e renda são determinantes essenciais.'},
+  {de:'RAS',para:'RAPS',tipo:'inclui',desc:'A RAPS é uma rede temática dentro das RAS — especializada em saúde mental, conectada aos demais níveis de atenção.'},
+  {de:'RAS',para:'RUE',tipo:'inclui',desc:'A RUE é a componente de urgência das RAS — estabiliza crises e reintegra o usuário à rede de cuidado contínuo.'},
+  {de:'RUE',para:'RAPS',tipo:'encaminha para',desc:'Crises em saúde mental chegam pela RUE e são encaminhadas ao CAPS III ou leitos em hospital geral após estabilização.'},
+  {de:'Psicólogo SUS',para:'Todos os níveis',tipo:'articulador',desc:'O psicólogo atua transversalmente: AB (matriciamento), CAPS (PTS), urgência (crise), hospital (humanização).'},
+  {de:'Reforma Psiquiátrica',para:'RAPS',tipo:'fundamenta',desc:'A Lei 10.216/2001 substituiu o manicômio pelo cuidado territorial — a RAPS é sua expressão institucional no SUS.'},
+  {de:'HumanizaSUS',para:'Psicólogo SUS',tipo:'orienta',desc:'O PTS e o acolhimento — ferramentas do HumanizaSUS — são os instrumentos centrais do psicólogo no SUS.'},
+  {de:'Matriciamento',para:'Saúde Mental na AB',tipo:'viabiliza',desc:'O apoio matricial viabiliza o cuidado em saúde mental na atenção básica sem sobrecarregar o CAPS com casos que a ESF pode manejar.'}
+];
+</script><script>
+const done=new Set();
+let qzCur=0,qzAns={},qzScore=0,curTid=null;
+
+function init(){
+  renderSb();renderHG();renderFC();renderMMBtns();renderMM(0);
+  renderTL();renderCMP();renderGConn();initQuiz();
+}
+function renderSb(){
+  document.getElementById('sb-temas').innerHTML=T.map(t=>
+    `<li><a id="sb-t${t.id}" onclick="goTema(${t.id})">
+      <span class="qdot${done.has(t.id)?' done':''}" id="qd-${t.id}">${done.has(t.id)?'✓':t.id}</span>
+      <span class="tdot" style="background:${t.cor}"></span>
+      <span class="qlbl">${t.icon} ${t.title}</span></a></li>`).join('');
+}
+function setSbA(id){document.querySelectorAll('.sbn li a').forEach(a=>a.classList.remove('active'));const e=document.getElementById(id);if(e)e.classList.add('active');}
+
+function renderHG(){
+  const b1=T.filter(t=>t.bloco===1),b2=T.filter(t=>t.bloco===2);
+  const mkCard=t=>`<div class="tcard" onclick="goTema(${t.id})" style="border-color:${t.cor}22">
+    <div class="tb" style="background:${t.cor}"></div>
+    <div class="tic">${t.icon}</div>
+    <h3 style="color:${t.cor}">${t.title}</h3><p>${t.sub}</p></div>`;
+  document.getElementById('grid-bloco1').innerHTML=b1.map(mkCard).join('');
+  document.getElementById('grid-bloco2').innerHTML=b2.map(mkCard).join('');
+}
+function renderFC(){
+  document.getElementById('fcgrid').innerHTML=T.map(t=>
+    `<div class="fc" onclick="this.classList.toggle('flip')">
+      <div class="fcin">
+        <div class="fcf" style="border-top:3px solid ${t.cor}">
+          <span class="fctag" style="color:${t.cor}">${t.icon} ${t.title}</span>
+          <p>${t.fQ}</p><span class="fchint">clique para revelar</span>
+        </div>
+        <div class="fcb">
+          <span class="fctag" style="color:${t.cor}">Resposta</span><p>${t.fA}</p>
+        </div>
+      </div></div>`).join('');
+}
+function buildMM(data,ac){
+  const W=880,H=600,cx=W/2,cy=H/2;
+  const bs=data.bs,n=bs.length;
+  const ang=bs.map((_,i)=>(i/n)*Math.PI*2-Math.PI/2);
+  const R1=152,R2=278;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:820px;font-family:'Segoe UI',system-ui,sans-serif">`;
+  bs.forEach((b,i)=>{const bx=cx+Math.cos(ang[i])*R1,by=cy+Math.sin(ang[i])*R1;
+    s+=`<line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" stroke="${b.c}" stroke-width="2.2" stroke-opacity=".45"/>`;});
+  bs.forEach((b,i)=>{
+    const bx=cx+Math.cos(ang[i])*R1,by=cy+Math.sin(ang[i])*R1;
+    const hn=(b.s.length-1)/2;
+    b.s.forEach((sub,j)=>{
+      const sa=ang[i]+(j-hn)*0.31,sx=cx+Math.cos(sa)*R2,sy=cy+Math.sin(sa)*R2;
+      s+=`<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="${b.c}" stroke-width="1.1" stroke-opacity=".32"/>`;
+      const txt=sub.length>22?sub.slice(0,21)+'…':sub;
+      const pw=Math.max(80,txt.length*6.6+18);
+      s+=`<rect x="${sx-pw/2}" y="${sy-13}" width="${pw}" height="26" rx="13" fill="${b.c}1a" stroke="${b.c}" stroke-width=".9" stroke-opacity=".6"/>`;
+      s+=`<text x="${sx}" y="${sy+5}" text-anchor="middle" font-size="${txt.length>16?9.5:11}" fill="${b.c}" font-weight="500">${txt}</text>`;
+    });
+    const lbl=b.l.length>20?b.l.slice(0,19)+'…':b.l,pw=Math.max(104,lbl.length*8.2+24);
+    s+=`<rect x="${bx-pw/2}" y="${by-21}" width="${pw}" height="42" rx="21" fill="${b.c}28" stroke="${b.c}" stroke-width="1.6"/>`;
+    s+=`<text x="${bx}" y="${by+5}" text-anchor="middle" font-size="${lbl.length>16?11:13}" fill="${b.c}" font-weight="700">${lbl}</text>`;
+  });
+  const cw=data.center.split(' ');
+  s+=`<circle cx="${cx}" cy="${cy}" r="66" fill="${ac}1a" stroke="${ac}" stroke-width="2.4"/>`;
+  if(cw.length<=2){s+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="14" fill="${ac}" font-weight="800">${data.center}</text>`;}
+  else{const h=Math.ceil(cw.length/2);
+    s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="12.5" fill="${ac}" font-weight="800">${cw.slice(0,h).join(' ')}</text>`;
+    s+=`<text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="12.5" fill="${ac}" font-weight="800">${cw.slice(h).join(' ')}</text>`;}
+  return s+'</svg>';
+}
+function renderMMBtns(){
+  document.getElementById('mm-btns').innerHTML=T.map((t,i)=>
+    `<div class="tl-card" style="border-left:3px solid ${t.cor}" onclick="renderMM(${i})"><h3 style="color:${t.cor}">${t.icon} ${t.title}</h3></div>`).join('');
+}
+function renderMM(idx){
+  const t=T[idx];
+  document.getElementById('mm-main').innerHTML=`<div class="ctit">🗺️ ${t.icon} ${t.title}</div><div class="mmwrap">${buildMM(t.mm,t.cor)}</div>`;
+}
+function renderTL(){
+  document.getElementById('tl-wrap').innerHTML=TL.map((e,i)=>{
+    return `<div class="tli" style="position:relative">
+      <div style="position:absolute;left:-24px;top:16px;width:14px;height:14px;border-radius:50%;border:2px solid #0e0a06;background:${e.cor};z-index:2"></div>
+      <div class="tli-in" style="border-left:3px solid ${e.cor}">
+        <div class="tl-head">
+          <span class="tl-yr" style="background:${e.cor}22;color:${e.cor};border:1px solid ${e.cor}44">${e.ano}</span>
+          <span class="tl-tag" style="color:${e.cor}">${e.tema}</span>
+        </div>
+        <div class="tl-title">${e.title}</div>
+        <div class="tl-body">${e.body}</div>
+      </div></div>`;}).join('');
+}
+function renderCMP(){
+  function mkTable(el,data){
+    const rows=data.map((r,i)=>i===0?`<tr>${r.map(c=>`<th>${c}</th>`).join('')}</tr>`:`<tr>${r.map((c,ci)=>`<td${ci===0?' style="color:var(--o1l);font-weight:700"':''}>${c}</td>`).join('')}</tr>`);
+    document.getElementById(el).innerHTML=`<thead>${rows[0]}</thead><tbody>${rows.slice(1).join('')}</tbody>`;
+  }
+  mkTable('ctable-bm',CMP_BM);
+  mkTable('ctable-niveis',CMP_NIVEIS);
+  mkTable('ctable-caps',CMP_CAPS);
+}
+function renderGConn(){
+  const GMM={center:'SUS — Redes e Serviços',bs:[
+    {l:'Atenção Básica',c:'#fb923c',s:['ESF / UBS','NASF (psicólogo)','ACS no território','Matriciamento']},
+    {l:'Saúde Mental (RAPS)',c:'#a78bfa',s:['CAPS (I,II,III,AD,i)','SRT (moradia)','CECO (cultura)','Leitos hosp. geral']},
+    {l:'Urgência (RUE)',c:'#ef4444',s:['SAMU 192','UPA 24h','Leitos retaguarda','Intervenção em crise']},
+    {l:'Política e Gestão',c:'#22d3ee',s:['Ref. e contrarreferência','HumanizaSUS','PTS','Reforma Psiquiátrica']}
+  ]};
+  document.getElementById('global-mm').innerHTML=buildMM(GMM,'#fb923c');
+  const tipoCor={referência:'#fb923c',fundamenta:'#fbbf24',articula:'#22d3ee','inclui':'#84cc16','encaminha para':'#ef4444',articulador:'#a78bfa','orienta':'#f97316',viabiliza:'#84cc16'};
+  document.getElementById('global-conn-list').innerHTML=GCONN.map(c=>`
+    <div class="card" style="margin-bottom:10px;border-left:3px solid ${tipoCor[c.tipo]||'#94a3b8'}">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+        <strong style="color:var(--tx);font-size:14px">${c.de}</strong>
+        <span style="font-size:12px;font-weight:700;color:${tipoCor[c.tipo]||'#94a3b8'};background:${tipoCor[c.tipo]||'#94a3b8'}22;padding:3px 9px;border-radius:12px">${c.tipo}</span>
+        <strong style="color:var(--tx);font-size:14px">${c.para}</strong>
+      </div>
+      <p style="font-size:13px;color:var(--tx2)">${c.desc}</p></div>`).join('');
+}
+
+// QUIZ
+function initQuiz(){qzCur=0;qzAns={};qzScore=0;renderQZ();}
+function renderQZ(){
+  const sh=document.getElementById('qshell');
+  if(qzCur>=ALL_QUIZ.length){
+    const pct=Math.round(qzScore/ALL_QUIZ.length*100);
+    sh.innerHTML=`<div class="score-card">
+      <h2>Quiz concluído! 🎉</h2>
+      <div class="big-score" style="color:${pct>=70?'var(--o5)':'var(--o4)'}">${qzScore}/${ALL_QUIZ.length}</div>
+      <p>${pct}% de aproveitamento — ${pct>=80?'Excelente!':pct>=60?'Bom! Revise os temas com erros.':'Revise o conteúdo e tente novamente.'}</p>
+      <button class="btn btn-o" onclick="initQuiz()" style="font-size:14px;padding:10px 22px">🔄 Refazer Quiz</button></div>`;
+    return;
+  }
+  const q=ALL_QUIZ[qzCur];
+  const isAns=qzAns[qzCur]!==undefined,isCorr=qzAns[qzCur+'_c'];
+  const pct=Math.round(qzCur/ALL_QUIZ.length*100);
+  sh.innerHTML=`
+    <div class="qpbar"><div class="qpfill" style="width:${pct}%"></div></div>
+    <div class="qinfo">
+      <span>Questão ${qzCur+1} de ${ALL_QUIZ.length}</span>
+      <span style="color:${q.tcor};font-weight:700">${q.ticon} ${q.ttitle}</span>
+      <span>Acertos: ${qzScore}</span>
+    </div>
+    <div class="qq-card" style="border-top:3px solid ${q.tcor}">
+      <div class="qq-tema" style="color:${q.tcor}">${q.ticon} ${q.ttitle}</div>
+      <div class="qq-text">${q.q}</div>
+      <div class="qopts">
+        ${q.opts.map((o,i)=>{let cls='qopt';if(isAns){if(o.c)cls+=' correct';else if(i===qzAns[qzCur]&&!o.c)cls+=' wrong';}
+          return `<button class="${cls}"${isAns?' disabled':''} onclick="ansQZ(${i},${o.c})">${String.fromCharCode(65+i)}) ${o.t}</button>`;}).join('')}
+      </div>
+      <div class="qfb ${isAns?'show':''} ${isAns?(isCorr?'ok':'nok'):''}">
+        ${isAns?`<div class="qfb-head">${isCorr?'✓ Correto!':'✗ Incorreto'}</div>
+        <div class="qfb-body">${isCorr?q.ok:q.nok}</div>
+        <div class="qfb-ref">📚 <strong>Referência:</strong> ${q.ref}</div>`:''}
+      </div>
+    </div>
+    <div class="qnav">
+      <button class="btn"${qzCur===0?' disabled':''} style="${qzCur===0?'opacity:.35':''}" onclick="mvQZ(-1)">← Anterior</button>
+      ${isAns?`<button class="btn btn-o" onclick="mvQZ(1)">${qzCur===ALL_QUIZ.length-1?'Ver Resultado →':'Próxima →'}</button>`:''}
+      <button class="sbtn" onclick="goTema(${q.tid});setTimeout(()=>swTab('conteudo',null),400)" style="margin-left:auto">📖 Estudar este tema</button>
+    </div>`;
+}
+function ansQZ(oi,ic){
+  if(qzAns[qzCur]!==undefined)return;
+  qzAns[qzCur]=oi;qzAns[qzCur+'_c']=ic;
+  if(ic){qzScore++;document.getElementById('stat-quiz').textContent=parseInt(document.getElementById('stat-quiz').textContent)+1;}
+  renderQZ();
+}
+function mvQZ(d){qzCur=Math.max(0,qzCur+d);renderQZ();}
+
+// TEMA
+function goTema(id){
+  const t=T.find(x=>x.id===id);if(!t)return;
+  curTid=id;hideAll();document.getElementById('sec-tema').style.display='block';
+  document.getElementById('toptit').textContent=`${t.icon} ${t.title}`;setSbA(`sb-t${id}`);
+  const b=document.getElementById('qbdg');b.textContent=t.icon;
+  b.style.background=t.cor+'22';b.style.border=`2px solid ${t.cor}`;
+  document.getElementById('qtit').textContent=t.title;
+  document.getElementById('qsub').textContent=t.sub;
+  const prev=document.getElementById('btn-prev');prev.disabled=id<=1;prev.style.opacity=id<=1?'.35':'1';
+  const next=document.getElementById('btn-next');next.disabled=id>=T.length;next.style.opacity=id>=T.length?'.35':'1';
+  updDB();
+  document.getElementById('kpills').innerHTML=t.kws.map(k=>`<span class="kp">${k}</span>`).join('');
+  document.getElementById('mnem-wrap').innerHTML=`<div class="mnem">💡 <strong>Macete:</strong> ${t.mnem}</div>`;
+  document.getElementById('ab-main').innerHTML=t.content;
+  document.getElementById('refbox').textContent=t.ref;
+  document.getElementById('mm-tit').textContent=t.title;
+  document.getElementById('q-mm').innerHTML=buildMM(t.mm,t.cor);
+  document.getElementById('conn-tit').textContent=t.title;
+  const tipoCor={integra:'#fb923c','porta de entrada':'#22d3ee','articula com':'#fbbf24','opõe-se a':'#ef4444',
+    'fundamenta':'#fbbf24','referência para':'#22d3ee','método de trabalho':'#84cc16','conecta com':'#a78bfa',
+    'organiza':'#fb923c','inclui':'#84cc16','resolve':'#84cc16','diferencia-se de':'#22d3ee','componente das':'#a78bfa',
+    'fundamenta-se em':'#fbbf24','encaminha para':'#ef4444','presente em':'#ef4444','orienta-se por':'#22d3ee',
+    'atua em':'#fb923c','referência em':'#84cc16'};
+  document.getElementById('conn-grid').innerHTML=t.conns.map(c=>{
+    const cor=tipoCor[c.tipo.toLowerCase()]||'#94a3b8';
+    return `<div class="conn-card" style="border-top:3px solid ${c.cor}">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:${cor};margin-bottom:5px">${c.tipo}</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px;color:${c.cor}">${c.nome}</div>
+      <div style="font-size:12px;color:var(--tx3);line-height:1.5">${c.desc}</div></div>`;}).join('');
+  const connMM={center:t.title,bs:t.conns.map(c=>({l:c.nome,c:c.cor,s:[c.tipo,c.desc.slice(0,38)+'…']}))};
+  document.getElementById('conn-mm').innerHTML=buildMM(connMM,t.cor);
+  document.getElementById('aimsgs').innerHTML=`<div class="aimsg bot"><div class="aiav">IA</div><div class="aibub">Olá! Vamos aprofundar <strong>${t.title}</strong>. O que você quer explorar?</div></div>`;
+  document.getElementById('qps').innerHTML=[
+    `Qual a diferença entre ${t.title} e ${T[(id%T.length)].title}?`,
+    `Como ${t.title} funciona na prática do SUS?`,
+    `Quais leis e portarias regulamentam ${t.title}?`,
+    `Como o psicólogo atua em ${t.title}?`,
+    `Como ${t.title} aparece em questões dissertativas?`
+  ].map(p=>`<button class="qpbtn" onclick="setPr(this)">${p}</button>`).join('');
+  swTab('conteudo',document.querySelector('#vtabs-bar .vtab[data-p="conteudo"]'));
+  scrT();closeSb();
+}
+function goQuizT(){const idx=ALL_QUIZ.findIndex(q=>q.tid===curTid);if(idx>=0)qzCur=idx;goSec('quiz');}
+function navQ(d){const idx=T.findIndex(t=>t.id===curTid);const n=T[idx+d];if(n)goTema(n.id);}
+function swTab(p,btn){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#vtabs-bar .vtab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('panel-'+p).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const b=document.querySelector(`#vtabs-bar .vtab[data-p="${p}"]`);if(b)b.classList.add('active');}
+  scrT();
+}
+function toggleDone(){
+  if(!curTid)return;
+  if(done.has(curTid))done.delete(curTid);else done.add(curTid);
+  updProg();renderSb();updDB();setSbA(`sb-t${curTid}`);
+}
+function updDB(){
+  const btn=document.getElementById('done-btn'),d=done.has(curTid);
+  btn.textContent=d?'✓ Estudado':'Marcar como estudado';
+  btn.className='done-btn'+(d?' done':'');
+}
+function updProg(){
+  const pct=Math.round(done.size/T.length*100);
+  document.getElementById('pf1').style.width=pct+'%';
+  document.getElementById('pf2').style.width=pct+'%';
+  document.getElementById('pbl1').textContent=done.size+' de '+T.length+' temas concluídos';
+  document.getElementById('pbl2').textContent=done.size+'/8';
+  document.getElementById('stat-done').textContent=done.size;
+}
+function setPr(btn){document.getElementById('ai-inp').value=btn.textContent;}
+async function sendAI(){
+  const t=T.find(x=>x.id===curTid);if(!t)return;
+  const inp=document.getElementById('ai-inp'),msg=inp.value.trim();if(!msg)return;
+  inp.value='';
+  const box=document.getElementById('aimsgs');
+  box.innerHTML+=`<div class="aimsg user"><div class="aiav">EU</div><div class="aibub">${esc(msg)}</div></div>`;
+  box.innerHTML+=`<div class="aimsg bot" id="typ-r"><div class="aiav">IA</div><div class="aibub"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>`;
+  box.scrollTop=box.scrollHeight;
+  document.getElementById('ai-btn').disabled=true;
+  const sys=`Você é professor de Saúde Coletiva e Gestão em Saúde para o curso de Psicologia na UNINASSAU. Tema atual: "${t.title} — ${t.sub}". Responda de forma clara, aprofundada e academicamente rigorosa. Use exemplos práticos do SUS. Mencione sempre legislação relevante (leis, portarias, resoluções) e autores/documentos. Conecte com outros temas quando pertinente: ESF, modelo ampliado, RAPS, RAS, RUE, papel do psicólogo, promoção de saúde, determinantes sociais. Responda em português do Brasil.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:msg}]})});
+    const data=await res.json();
+    const reply=data.content?.map(c=>c.text||'').join('')||'Não foi possível obter resposta.';
+    document.getElementById('typ-r').innerHTML=`<div class="aiav">IA</div><div class="aibub">${reply.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  }catch(e){
+    document.getElementById('typ-r').innerHTML=`<div class="aiav">IA</div><div class="aibub" style="color:var(--o4l)">Erro de conexão. Tente novamente.</div>`;
+  }
+  document.getElementById('ai-btn').disabled=false;
+  box.scrollTop=box.scrollHeight;
+}
+document.getElementById('ai-inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}});
+
+function scrT(){document.getElementById('scr').scrollTo({top:0,behavior:'smooth'});}
+function hideAll(){['sec-home','sec-tema','sec-quiz','sec-mm','sec-fc','sec-tl','sec-cmp','sec-conn'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});}
+function goHome(){hideAll();document.getElementById('sec-home').style.display='block';document.getElementById('toptit').textContent='Saúde Coletiva e Redes de Atenção à Saúde';setSbA('sb-home');scrT();closeSb();}
+function goSec(n){
+  hideAll();document.getElementById('sec-'+n).style.display='block';
+  const tt={quiz:'✏️ Quiz Completo',mm:'🗺️ Mapas Mentais',fc:'🃏 Flashcards',tl:'📅 Linha do Tempo',cmp:'⚖️ Comparativo',conn:'🔗 Conexões entre Temas'};
+  document.getElementById('toptit').textContent=tt[n]||n;setSbA('sb-'+n);scrT();closeSb();
+  if(n==='quiz')renderQZ();
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toggleSb(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('ovl').classList.toggle('show');}
+function closeSb(){document.getElementById('sidebar').classList.remove('open');document.getElementById('ovl').classList.remove('show');}
+
+init();
+</script>
+</body>
+</html>
